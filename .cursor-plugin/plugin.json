@@ -1,0 +1,26 @@
+{
+  "name": "abbie",
+  "version": "0.1.0",
+  "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
+  "author": {
+    "name": "creative-int",
+    "email": "support@creative-int.com"
+  },
+  "homepage": "https://abbie.computer",
+  "repository": "https://github.com/creative-int/abbie-plugins.git",
+  "license": "MIT",
+  "keywords": [
+    "abbie",
+    "mcp",
+    "agent-skills",
+    "projects",
+    "workspaces",
+    "tasks",
+    "proof",
+    "pull-requests"
+  ],
+  "displayName": "Abbie",
+  "logo": "assets/logo.png",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json"
+}

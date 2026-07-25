@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "abbie": {
+      "command": "abbie",
+      "args": [
+        "mcp",
+        "serve"
+      ]
+    }
+  }
+}

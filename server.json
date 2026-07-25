@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.creative-int/abbie",
+  "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
+  "version": "0.1.0",
+  "websiteUrl": "https://abbie.computer",
+  "repository": {
+    "url": "https://github.com/creative-int/abbie-plugins",
+    "source": "github"
+  },
+  "_meta": {
+    "computer.abbie/cli-bridge": {
+      "command": "abbie",
+      "args": [
+        "mcp",
+        "serve"
+      ],
+      "transport": "stdio",
+      "authentication": "The installed Abbie CLI reads the operator credential locally; plugin manifests contain no credential."
+    }
+  }
+}

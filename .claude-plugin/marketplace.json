@@ -1,0 +1,15 @@
+{
+  "name": "abbie",
+  "owner": {
+    "name": "creative-int",
+    "email": "support@creative-int.com"
+  },
+  "plugins": [
+    {
+      "name": "abbie",
+      "displayName": "Abbie",
+      "source": "./",
+      "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets."
+    }
+  ]
+}
