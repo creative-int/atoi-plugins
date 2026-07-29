@@ -1,174 +1,199 @@
-import {
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { abbie } from "../abbie.config.ts";
+import { abbieConfig } from "../abbie.config.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const check = process.argv.includes("--check");
-const repositorySlug = abbie.repository.replace("https://github.com/", "");
-const repositoryGit = `${abbie.repository}.git`;
-const author = abbie.owner;
+const version = "0.1.0";
+const displayName = "Abbie";
+const repository = `https://github.com/creative-int/${abbieConfig.product}-plugins`;
+const repositorySlug = repository.replace("https://github.com/", "");
+const repositoryGit = `${repository}.git`;
+const homepage = `https://${abbieConfig.product}.computer`;
+const docs = `https://docs.${abbieConfig.product}.computer`;
+const author = {
+  name: "creative-int",
+  email: "support@creative-int.com",
+};
+const primarySkill = abbieConfig.skills.find(
+  (skill) => skill.name === abbieConfig.product,
+);
 
-const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
+if (!primarySkill) {
+  throw new Error(`Missing primary ${abbieConfig.product} skill in config.`);
+}
+
+const description = primarySkill.description;
+const bridge = {
+  command: abbieConfig.product,
+  args: ["mcp", "serve"],
+};
 const mcpConfig = {
   mcpServers: {
-    [abbie.mcp.id]: {
-      command: abbie.mcp.command,
-      args: abbie.mcp.args,
-    },
+    [abbieConfig.mcp.name]: bridge,
   },
 };
-
-const installClients = [
-  {
-    id: "prerequisite",
-    label: "Prerequisite",
-    blurb:
-      "Install the Abbie product CLI, connect your operator identity once, and verify the governed bridge.",
-    language: "sh",
-    steps: [
-      "abbie account login",
-      "abbie mcp status --probe",
-    ],
-  },
-  {
-    id: "skills",
-    label: "Skills in any compatible agent",
-    blurb:
-      "Install both portable workflows in Claude Code, Codex, Cursor, Copilot, Windsurf, and other skill-aware agents.",
-    language: "sh",
-    steps: [`npx skills add ${repositorySlug}`],
-  },
-  {
-    id: "claude-code",
-    label: "Claude Code plugin",
-    blurb: "Add the marketplace, then install the Abbie plugin.",
-    language: "text",
-    steps: [
-      `/plugin marketplace add ${repositorySlug}`,
-      `/plugin install ${abbie.name}@${abbie.name}`,
-    ],
-  },
-  {
-    id: "codex",
-    label: "Codex plugin",
-    blurb:
-      "Add this repository as a Codex plugin marketplace, then install Abbie from the plugin picker.",
-    language: "sh",
-    steps: [`codex plugin marketplace add ${repositorySlug}`],
-  },
-  {
-    id: "cursor",
-    label: "Cursor plugin",
-    blurb: "Add this repository as a Cursor plugin marketplace.",
-    language: "text",
-    steps: [
-      `Cursor → Settings → Plugins → Add marketplace → ${repositorySlug}`,
-    ],
-  },
-  {
-    id: "mcp",
-    label: "Any local MCP client",
-    blurb:
-      "Use the credential-safe stdio bridge. The configuration contains no token and works from any directory where `abbie` is on PATH.",
-    language: "json",
-    steps: [json(mcpConfig).trim()],
-  },
+const keywords = [
+  abbieConfig.product,
+  "agent-skills",
+  "mcp",
+  "projects",
+  "workspaces",
+  "tasks",
+  "proof",
 ];
+const profileMetadata = {
+  repoProfile: abbieConfig.repoProfile,
+  companionOf: abbieConfig.companionOf,
+  mcp: abbieConfig.mcp,
+};
+const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
+
+function clientInstall(client: (typeof abbieConfig.clients)[number]) {
+  if (client === "claude") {
+    return [
+      "### Claude Code",
+      "",
+      "Add the companion marketplace and install Abbie. The plugin starts the local credential-safe MCP bridge.",
+      "",
+      "```text",
+      `/plugin marketplace add ${repositorySlug}`,
+      `/plugin install ${abbieConfig.product}@${abbieConfig.product}`,
+      "```",
+    ].join("\n");
+  }
+  if (client === "codex") {
+    return [
+      "### Codex",
+      "",
+      "Add the companion marketplace, then install Abbie from the plugin picker. The equivalent direct MCP configuration is shown below.",
+      "",
+      "```sh",
+      `codex plugin marketplace add ${repositorySlug}`,
+      "```",
+      "",
+      "```toml",
+      `[mcp_servers.${abbieConfig.mcp.name}]`,
+      `command = "${bridge.command}"`,
+      `args = ["${bridge.args.join('", "')}"]`,
+      "```",
+    ].join("\n");
+  }
+  return [
+    "### Cursor",
+    "",
+    "Add the companion marketplace in Cursor, or place the equivalent MCP configuration in `.cursor/mcp.json`.",
+    "",
+    "```text",
+    `Cursor → Settings → Plugins → Add marketplace → ${repositorySlug}`,
+    "```",
+    "",
+    "```json",
+    json(mcpConfig).trim(),
+    "```",
+  ].join("\n");
+}
 
 const generatedFiles: Record<string, string> = {
   ".mcp.json": json(mcpConfig),
   ".claude-plugin/plugin.json": json({
-    name: abbie.name,
-    version: abbie.version,
-    description: abbie.shortDescription,
+    name: abbieConfig.product,
+    version,
+    description,
     author,
-    homepage: abbie.homepage,
+    homepage,
     repository: repositoryGit,
-    license: abbie.license,
-    keywords: abbie.keywords,
-    displayName: abbie.displayName,
+    license: "MIT",
+    keywords,
+    displayName,
     skills: "./skills",
     mcpServers: "./.mcp.json",
   }),
   ".claude-plugin/marketplace.json": json({
-    name: abbie.name,
+    name: abbieConfig.product,
     owner: author,
     plugins: [
       {
-        name: abbie.name,
-        displayName: abbie.displayName,
+        name: abbieConfig.product,
+        displayName,
         source: "./",
-        description: abbie.shortDescription,
+        description,
       },
     ],
   }),
   ".codex-plugin/plugin.json": json({
-    name: abbie.name,
-    version: abbie.version,
-    description: abbie.shortDescription,
+    name: abbieConfig.product,
+    version,
+    description,
     author,
-    homepage: abbie.homepage,
+    homepage,
     repository: repositoryGit,
-    license: abbie.license,
-    keywords: abbie.keywords,
+    license: "MIT",
+    keywords,
     skills: "./skills",
     mcpServers: "./.mcp.json",
     interface: {
-      displayName: abbie.displayName,
-      shortDescription: abbie.shortDescription,
-      longDescription: abbie.longDescription,
-      developerName: abbie.owner.name,
-      category: abbie.category,
-      logo: abbie.logo,
+      displayName,
+      shortDescription: description,
+      longDescription:
+        "Abbie keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
+      developerName: author.name,
+      category: "Developer Tools",
+      capabilities: ["Read", "Write"],
+      defaultPrompt: [
+        "Show my Abbie projects and their workspace status.",
+        "Start a governed Abbie task for this project.",
+        "Review this Abbie task's changes, checks, and proof.",
+      ],
+      logo: "./assets/logo.png",
     },
   }),
   ".cursor-plugin/plugin.json": json({
-    name: abbie.name,
-    version: abbie.version,
-    description: abbie.shortDescription,
+    name: abbieConfig.product,
+    version,
+    description,
     author,
-    homepage: abbie.homepage,
+    homepage,
     repository: repositoryGit,
-    license: abbie.license,
-    keywords: abbie.keywords,
-    displayName: abbie.displayName,
-    logo: abbie.logo.replace("./", ""),
+    license: "MIT",
+    keywords,
+    displayName,
+    logo: "assets/logo.png",
     skills: "./skills",
     mcpServers: "./.mcp.json",
   }),
   ".cursor-plugin/marketplace.json": json({
-    name: abbie.name,
+    name: abbieConfig.product,
     owner: author,
-    metadata: { description: abbie.shortDescription },
+    metadata: {
+      description,
+      ...profileMetadata,
+    },
     plugins: [
       {
-        name: abbie.name,
+        name: abbieConfig.product,
         source: ".",
-        description: abbie.shortDescription,
+        description,
       },
     ],
   }),
   "server.json": json({
     $schema:
       "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
-    name: abbie.registryName,
-    description: abbie.shortDescription,
-    version: abbie.version,
-    websiteUrl: abbie.homepage,
-    repository: { url: abbie.repository, source: "github" },
+    name: "io.github.creative-int/abbie",
+    description,
+    version,
+    websiteUrl: homepage,
+    repository: { url: repository, source: "github" },
     _meta: {
+      "computer.abbie/companion": profileMetadata,
       "computer.abbie/cli-bridge": {
-        command: abbie.mcp.command,
-        args: abbie.mcp.args,
-        transport: abbie.mcp.transport,
+        ...bridge,
+        transport: "stdio",
         authentication:
-          "The installed Abbie CLI reads the operator credential locally; plugin manifests contain no credential.",
+          "The installed Abbie CLI reads the operator token locally; plugin manifests contain no credential.",
       },
     },
   }),
@@ -192,22 +217,32 @@ function write(relativePath: string, content: string) {
 }
 
 function installBlock() {
-  return installClients
-    .map(({ label, blurb, language, steps }) => {
-      return [
-        `### ${label}`,
-        "",
-        blurb,
-        "",
-        `\`\`\`${language}`,
-        ...steps,
-        "```",
-      ].join("\n");
-    })
-    .join("\n\n");
+  return [
+    "### Prerequisite",
+    "",
+    "Install the Abbie product CLI, connect your operator identity once, and verify the governed bridge.",
+    "",
+    "```sh",
+    "abbie account login",
+    "abbie mcp status --probe",
+    "```",
+    "",
+    ...abbieConfig.clients.flatMap((client, index) => [
+      clientInstall(client),
+      ...(index === abbieConfig.clients.length - 1 ? [] : [""]),
+    ]),
+    "",
+    "### Portable skills",
+    "",
+    "Install the Abbie skills without a client plugin. This does not connect MCP by itself.",
+    "",
+    "```sh",
+    `npx skills add ${repositorySlug}`,
+    "```",
+  ].join("\n");
 }
 
-function nextReadme(current: string) {
+function generatedReadme(current: string) {
   const replacement = `${start}\n\n${installBlock()}\n\n${end}`;
   const markers = new RegExp(`${start}[\\s\\S]*?${end}`);
   if (!markers.test(current)) {
@@ -233,12 +268,12 @@ const currentReadme = read(readmePath);
 if (currentReadme === null) {
   throw new Error("README.md is missing.");
 }
-const generatedReadme = nextReadme(currentReadme);
-if (generatedReadme !== currentReadme) {
+const nextReadme = generatedReadme(currentReadme);
+if (nextReadme !== currentReadme) {
   stale += 1;
   console.log(`${check ? "stale" : "wrote"}: README.md (install block)`);
   if (!check) {
-    write("README.md", generatedReadme);
+    write("README.md", nextReadme);
   }
 }
 
@@ -250,3 +285,4 @@ if (check && stale > 0) {
 }
 
 console.log(check ? "generated files are current." : "generated all adapters.");
+console.log(`docs: ${docs}`);

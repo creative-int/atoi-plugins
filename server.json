@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.creative-int/abbie",
-  "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
+  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "version": "0.1.0",
   "websiteUrl": "https://abbie.computer",
   "repository": {
@@ -9,6 +9,16 @@
     "source": "github"
   },
   "_meta": {
+    "computer.abbie/companion": {
+      "repoProfile": "agent-plugin-companion",
+      "companionOf": "abbie",
+      "mcp": {
+        "name": "abbie",
+        "endpoint": "https://kindly-terrier-129.convex.site/mcp",
+        "auth": "token",
+        "notes": "Clients connect through `abbie mcp serve`. `abbie account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
+      }
+    },
     "computer.abbie/cli-bridge": {
       "command": "abbie",
       "args": [
@@ -16,7 +26,7 @@
         "serve"
       ],
       "transport": "stdio",
-      "authentication": "The installed Abbie CLI reads the operator credential locally; plugin manifests contain no credential."
+      "authentication": "The installed Abbie CLI reads the operator token locally; plugin manifests contain no credential."
     }
   }
 }

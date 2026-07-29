@@ -7,11 +7,27 @@
 <p align="center"><strong>Governed project work, from source truth to proof.</strong></p>
 
 <p align="center">
-  Portable skills and credential-safe MCP wiring for
+  The public agent-plugin companion for
   <a href="https://abbie.computer">Abbie</a>.
 </p>
 
+<p align="center">
+  <a href="https://docs.abbie.computer">Documentation</a> ·
+  <a href="https://abbie.computer">Product</a>
+</p>
+
 ---
+
+## What this repo is
+
+`abbie-plugins` distributes portable Abbie skills and generated setup for
+Claude Code, Codex, and Cursor. It is an `agent-plugin-companion` whose
+`companionOf` product is `abbie`; it does not contain Abbie's backend, task
+runtime, credentials, or product schema.
+
+Every client connects through `abbie mcp serve`. The installed Abbie CLI owns
+the operator token and bridges local stdio to Abbie's authenticated MCP
+endpoint without placing credentials in this repository.
 
 ## Install
 
@@ -26,42 +42,36 @@ abbie account login
 abbie mcp status --probe
 ```
 
-### Skills in any compatible agent
+### Claude Code
 
-Install both portable workflows in Claude Code, Codex, Cursor, Copilot, Windsurf, and other skill-aware agents.
-
-```sh
-npx skills add creative-int/abbie-plugins
-```
-
-### Claude Code plugin
-
-Add the marketplace, then install the Abbie plugin.
+Add the companion marketplace and install Abbie. The plugin starts the local credential-safe MCP bridge.
 
 ```text
 /plugin marketplace add creative-int/abbie-plugins
 /plugin install abbie@abbie
 ```
 
-### Codex plugin
+### Codex
 
-Add this repository as a Codex plugin marketplace, then install Abbie from the plugin picker.
+Add the companion marketplace, then install Abbie from the plugin picker. The equivalent direct MCP configuration is shown below.
 
 ```sh
 codex plugin marketplace add creative-int/abbie-plugins
 ```
 
-### Cursor plugin
+```toml
+[mcp_servers.abbie]
+command = "abbie"
+args = ["mcp", "serve"]
+```
 
-Add this repository as a Cursor plugin marketplace.
+### Cursor
+
+Add the companion marketplace in Cursor, or place the equivalent MCP configuration in `.cursor/mcp.json`.
 
 ```text
 Cursor → Settings → Plugins → Add marketplace → creative-int/abbie-plugins
 ```
-
-### Any local MCP client
-
-Use the credential-safe stdio bridge. The configuration contains no token and works from any directory where `abbie` is on PATH.
 
 ```json
 {
@@ -77,43 +87,49 @@ Use the credential-safe stdio bridge. The configuration contains no token and wo
 }
 ```
 
-<!-- AUTO-GENERATED:INSTALL END -->
+### Portable skills
 
-The plugin does not contain an Abbie credential. `abbie mcp serve` reads the
-operator credential from the installed product CLI and writes only MCP
-JSON-RPC to stdout.
+Install the Abbie skills without a client plugin. This does not connect MCP by itself.
+
+```sh
+npx skills add creative-int/abbie-plugins
+```
+
+<!-- AUTO-GENERATED:INSTALL END -->
 
 ## Included skills
 
+- **`abbie`** — complete MCP bridge guide: authentication, core tools, common
+  Project → Workspace → Task flows, proof review, and mutation guardrails.
 - **`abbie-project-work`** — set up or inspect a Project and stable Workspace,
-  then run a governed Task through Result, Changes, Checks, and Proof.
+  then follow a governed Task through Result, Changes, Checks, and Proof.
 - **`abbie-proof-review`** — review the authoritative change set and choose
   local apply or a proof-backed draft pull request without bypassing
   confirmation or idempotency.
 
-## MCP tools
+## MCP surface
 
-The live server exposes exactly:
+The governed v1 bridge exposes:
 
 - `abbie_projects`
 - `abbie_workspace`
 - `abbie_tasks`
 
-The Abbie backend remains the authority for every tool call. This repository
-contains no task runtime and no client-side mutation implementation.
+The Abbie backend remains authoritative for every call. See the
+[Abbie documentation](https://docs.abbie.computer) for product concepts and
+setup.
 
 ## Develop
 
 ```sh
 corepack pnpm@10.28.2 install
 pnpm generate
+pnpm smoke
 pnpm verify
-pnpm receipt
 ```
 
-`server.json` is repository metadata with a publisher extension describing the
-Abbie CLI bridge. It is not published to the MCP Registry until the CLI has a
-compatible public package entry.
+Generated files must never be hand-edited. Change `abbie.config.ts`, generate,
+smoke, and commit the resulting artifacts together.
 
 ## License
 

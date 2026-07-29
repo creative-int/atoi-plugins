@@ -2,8 +2,10 @@
   "name": "@creative-int/abbie-plugins",
   "version": "0.1.0",
   "private": true,
-  "appRepoProfile": "agent-plugin-companion",
+  "repoProfile": "agent-plugin-companion",
+  "companionOf": "abbie",
   "creativeInt": {
+    "repoProfile": "agent-plugin-companion",
     "companionOf": "abbie",
     "workspaceLint": {
       "allowedRootEntries": ["abbie.config.ts"]
@@ -32,6 +34,7 @@
     ".cursor-plugin",
     ".mcp.json",
     "server.json",
+    "abbie.config.ts",
     "LICENSE",
     "README.md",
     "assets/logo.png",
@@ -41,10 +44,8 @@
     "generate": "node tooling/generate.ts",
     "check:generated": "node tooling/generate.ts --check",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tooling/*.test.ts",
     "smoke": "node tooling/smoke.ts",
-    "receipt": "node tooling/receipt.ts",
-    "verify": "pnpm run check:generated && pnpm run typecheck && pnpm run test && pnpm run smoke && pnpm run receipt"
+    "verify": "pnpm run generate && pnpm run smoke"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

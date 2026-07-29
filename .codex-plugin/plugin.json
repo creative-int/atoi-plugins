@@ -1,7 +1,7 @@
 {
   "name": "abbie",
   "version": "0.1.0",
-  "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
+  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "author": {
     "name": "creative-int",
     "email": "support@creative-int.com"
@@ -11,22 +11,30 @@
   "license": "MIT",
   "keywords": [
     "abbie",
-    "mcp",
     "agent-skills",
+    "mcp",
     "projects",
     "workspaces",
     "tasks",
-    "proof",
-    "pull-requests"
+    "proof"
   ],
   "skills": "./skills",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Abbie",
-    "shortDescription": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
-    "longDescription": "Abbie keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, proof, local apply, and draft pull requests in one governed workflow. This companion adds portable skills and credential-safe MCP wiring through the installed Abbie CLI.",
+    "shortDescription": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+    "longDescription": "Abbie keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
     "developerName": "creative-int",
     "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Show my Abbie projects and their workspace status.",
+      "Start a governed Abbie task for this project.",
+      "Review this Abbie task's changes, checks, and proof."
+    ],
     "logo": "./assets/logo.png"
   }
 }

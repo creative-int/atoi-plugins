@@ -1,17 +1,45 @@
 # Abbie Plugins
 
-This repository is the public distribution companion for Abbie. It owns
-portable skills and generated plugin/MCP manifests. It does not own the Abbie
-runtime, product schema, credentials, or task execution.
+This repository is Abbie's public `agent-plugin-companion`. It distributes
+portable skills and generated Claude Code, Codex, Cursor, MCP, and registry
+metadata. The Abbie product repo remains the runtime and schema authority.
 
-## Rules
+## Source of truth
 
-- Edit `abbie.config.ts` and run `pnpm generate`; do not hand-edit generated
-  manifests or the generated README install block.
-- Keep credentials out of source, examples, logs, and receipts.
-- The MCP boundary is `abbie mcp serve`. Do not connect plugins directly to a
-  bearer-authenticated remote URL.
-- Public skills may use Abbie's public CLI and the three documented MCP tools.
-  They must not reference private paths, repositories, or operator tooling.
-- Run `pnpm verify` before committing. Commit and push scoped green changes.
-- Do not publish packages or MCP Registry entries from this repository.
+`abbie.config.ts` is the single hand-edited source for product identity,
+companion metadata, MCP endpoint and authentication posture, supported clients,
+and distributed skills.
+
+Never hand-edit generated files:
+
+- `.mcp.json`
+- `server.json`
+- `.claude-plugin/`
+- `.codex-plugin/`
+- `.cursor-plugin/`
+- the README install block between generated markers
+
+## Delivery loop
+
+```sh
+pnpm generate
+pnpm smoke
+git status --short
+git add <intentional-files>
+git commit -m "feat: ..."
+```
+
+Run `pnpm verify` before every commit. Publishing and pushing are owner actions
+unless a task explicitly authorizes them.
+
+## Boundaries
+
+- The client boundary is `abbie mcp serve`; never put an operator token in a
+  manifest, example, log, receipt, or skill.
+- Skills may use the public Abbie CLI and documented MCP tools. They must not
+  depend on private paths or another product repository.
+- Do not add workspace, Turbo, Biome, Knip, Codecov, `TESTING.md`, or `.npmrc`
+  machinery while this remains an `agent-plugin-companion`.
+- Do not publish npm packages or MCP Registry entries from this repository.
+
+`CLAUDE.md` must remain a symlink to this file.

@@ -1,7 +1,7 @@
 {
   "name": "abbie",
   "version": "0.1.0",
-  "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets.",
+  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "author": {
     "name": "creative-int",
     "email": "support@creative-int.com"
@@ -11,13 +11,12 @@
   "license": "MIT",
   "keywords": [
     "abbie",
-    "mcp",
     "agent-skills",
+    "mcp",
     "projects",
     "workspaces",
     "tasks",
-    "proof",
-    "pull-requests"
+    "proof"
   ],
   "displayName": "Abbie",
   "logo": "assets/logo.png",

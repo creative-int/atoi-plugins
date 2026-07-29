@@ -9,7 +9,7 @@
       "name": "abbie",
       "displayName": "Abbie",
       "source": "./",
-      "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets."
+      "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
     }
   ]
 }

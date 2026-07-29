@@ -5,13 +5,21 @@
     "email": "support@creative-int.com"
   },
   "metadata": {
-    "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets."
+    "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+    "repoProfile": "agent-plugin-companion",
+    "companionOf": "abbie",
+    "mcp": {
+      "name": "abbie",
+      "endpoint": "https://kindly-terrier-129.convex.site/mcp",
+      "auth": "token",
+      "notes": "Clients connect through `abbie mcp serve`. `abbie account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
+    }
   },
   "plugins": [
     {
       "name": "abbie",
       "source": ".",
-      "description": "Connect agents to Abbie Projects, Workspaces, governed Tasks, and proof-bound change sets."
+      "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
     }
   ]
 }

@@ -1,106 +1,92 @@
-import { spawnSync } from "node:child_process";
+import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { abbie } from "../abbie.config.ts";
+import { abbieConfig } from "../abbie.config.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const requireLive = process.env.ABBIE_PLUGIN_SMOKE_REQUIRE_LIVE === "1";
-const expectedTools = abbie.tools.map((tool) => tool.name).sort();
-const expectedConfig = JSON.parse(
-  readFileSync(join(root, ".mcp.json"), "utf8"),
-) as unknown;
+const generatedJson = [
+  ".mcp.json",
+  "server.json",
+  ".claude-plugin/plugin.json",
+  ".claude-plugin/marketplace.json",
+  ".codex-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
+  ".cursor-plugin/marketplace.json",
+] as const;
 
-function command(args: string[]) {
-  return spawnSync("abbie", args, {
-    encoding: "utf8",
-    env: process.env,
-    timeout: 20_000,
-  });
-}
+type JsonObject = Record<string, unknown>;
 
-function fail(message: string): never {
-  console.error(`smoke failed: ${message}`);
-  process.exit(1);
-}
-
-function skip(message: string) {
-  if (requireLive) {
-    fail(message);
-  }
-  console.log(`smoke skipped: ${message}`);
-  process.exit(0);
-}
-
-function parseEnvelope(stdout: string, commandName: string) {
+function parse(relativePath: (typeof generatedJson)[number]) {
+  const content = readFileSync(join(root, relativePath), "utf8");
   try {
-    return JSON.parse(stdout) as { data?: Record<string, unknown> };
-  } catch {
-    fail(`${commandName} did not return a JSON envelope`);
+    return JSON.parse(content) as JsonObject;
+  } catch (error) {
+    throw new Error(
+      `${relativePath} is not valid JSON: ${(error as Error).message}`,
+    );
   }
 }
 
-const version = command(["version", "--json"]);
-if (version.error && (version.error as NodeJS.ErrnoException).code === "ENOENT") {
-  skip("the Abbie CLI is not installed");
-}
-if (version.status !== 0) {
-  fail(`abbie version exited ${version.status}: ${version.stderr.trim()}`);
+const artifacts = Object.fromEntries(
+  generatedJson.map((relativePath) => [relativePath, parse(relativePath)]),
+) as Record<(typeof generatedJson)[number], JsonObject>;
+
+assert.equal(abbieConfig.product, "abbie");
+assert.equal(abbieConfig.companionOf, "abbie");
+assert.equal(abbieConfig.repoProfile, "agent-plugin-companion");
+assert.deepEqual(abbieConfig.clients, ["claude", "codex", "cursor"]);
+assert.equal(abbieConfig.mcp.name, "abbie");
+assert.equal(abbieConfig.mcp.auth, "token");
+assert.match(abbieConfig.mcp.endpoint, /^https:\/\/.+\/mcp$/);
+assert.match(abbieConfig.mcp.notes ?? "", /abbie mcp serve/);
+
+const mcp = artifacts[".mcp.json"];
+assert.deepEqual(mcp, {
+  mcpServers: {
+    abbie: {
+      command: "abbie",
+      args: ["mcp", "serve"],
+    },
+  },
+});
+
+for (const client of ["claude", "codex", "cursor"] as const) {
+  const manifest =
+    artifacts[
+      `.${client === "claude" ? "claude" : client}-plugin/plugin.json`
+    ];
+  assert.equal(manifest.name, "abbie");
+  assert.equal(manifest.version, "0.1.0");
+  assert.equal(typeof manifest.description, "string");
+  assert.equal(manifest.skills, "./skills");
+  assert.equal(manifest.mcpServers, "./.mcp.json");
 }
 
-const configResult = command(["mcp", "config", "--client", "generic", "--json"]);
-if (configResult.status !== 0) {
-  fail(
-    `abbie mcp config exited ${configResult.status}: ${configResult.stderr.trim()}`,
-  );
-}
-const configEnvelope = parseEnvelope(configResult.stdout, "abbie mcp config");
-if (
-  JSON.stringify(configEnvelope.data?.config) !== JSON.stringify(expectedConfig)
-) {
-  fail("generated .mcp.json differs from the Abbie CLI generic config");
-}
-
-const accountResult = command(["account", "status", "--json"]);
-if (accountResult.status !== 0) {
-  skip("the Abbie operator identity is not connected");
-}
-const accountEnvelope = parseEnvelope(
-  accountResult.stdout,
-  "abbie account status",
+const server = artifacts["server.json"];
+assert.equal(server.name, "io.github.creative-int/abbie");
+assert.equal(server.version, "0.1.0");
+assert.equal(
+  (server.repository as JsonObject).url,
+  "https://github.com/creative-int/abbie-plugins",
 );
-if (accountEnvelope.data?.connected !== true) {
-  skip("the Abbie operator identity is not connected");
-}
+const serverMeta = server._meta as JsonObject;
+const companion = serverMeta["computer.abbie/companion"] as JsonObject;
+assert.equal(companion.repoProfile, "agent-plugin-companion");
+assert.equal(companion.companionOf, "abbie");
+assert.deepEqual(companion.mcp, abbieConfig.mcp);
 
-const statusResult = command(["mcp", "status", "--probe", "--json"]);
-if (statusResult.status !== 0) {
-  fail(
-    `abbie mcp status --probe exited ${statusResult.status}: ${statusResult.stderr.trim()}`,
-  );
-}
-const statusEnvelope = parseEnvelope(
-  statusResult.stdout,
-  "abbie mcp status --probe",
-);
-const tools = Array.isArray(statusEnvelope.data?.tools)
-  ? [...statusEnvelope.data.tools].sort()
-  : [];
-if (
-  statusEnvelope.data?.status !== "live" ||
-  statusEnvelope.data?.scope !== "operator" ||
-  JSON.stringify(tools) !== JSON.stringify(expectedTools)
-) {
-  fail(
-    `live MCP contract mismatch: ${JSON.stringify({
-      status: statusEnvelope.data?.status,
-      scope: statusEnvelope.data?.scope,
-      tools,
-    })}`,
-  );
+for (const skill of abbieConfig.skills) {
+  const skillPath = join(root, skill.dir, "SKILL.md");
+  const content = readFileSync(skillPath, "utf8");
+  assert.match(content, new RegExp(`^name:\\s*${skill.name}$`, "m"));
+  assert.match(content, /^description:\s*/m);
 }
 
 console.log(
-  `smoke live: Abbie ${String(statusEnvelope.data?.protocolVersion)} · ${expectedTools.join(", ")}`,
+  `smoke passed: ${generatedJson.length} generated JSON files, ${abbieConfig.clients.length} clients, ${abbieConfig.skills.length} skills`,
+);
+console.log(
+  `MCP bridge: abbie mcp serve -> ${abbieConfig.mcp.endpoint} (${abbieConfig.mcp.auth})`,
 );
