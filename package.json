@@ -45,7 +45,7 @@
     "check:generated": "node tooling/generate.ts --check",
     "typecheck": "tsc --noEmit",
     "smoke": "node tooling/smoke.ts",
-    "verify": "pnpm run generate && pnpm run smoke"
+    "verify": "pnpm run check:generated && pnpm run typecheck && pnpm run smoke"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

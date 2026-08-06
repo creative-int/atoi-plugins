@@ -19,6 +19,10 @@ Never hand-edit generated files:
 - `.cursor-plugin/`
 - the README install block between generated markers
 
+## Platform posture
+
+Tooling-only companion repo; no product runtime surface.
+
 ## Delivery loop
 
 ```sh
