@@ -1,15 +1,15 @@
 {
-  "name": "abbie",
+  "name": "atoi",
   "owner": {
     "name": "creative-int",
     "email": "support@creative-int.com"
   },
   "plugins": [
     {
-      "name": "abbie",
-      "displayName": "Abbie",
+      "name": "atoi",
+      "displayName": "Atoi",
       "source": "./",
-      "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
+      "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
     }
   ]
 }

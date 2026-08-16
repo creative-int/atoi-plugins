@@ -1,16 +1,16 @@
 {
-  "name": "abbie",
+  "name": "atoi",
   "version": "0.1.0",
-  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+  "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "author": {
     "name": "creative-int",
     "email": "support@creative-int.com"
   },
-  "homepage": "https://abbie.computer",
-  "repository": "https://github.com/creative-int/abbie-plugins.git",
+  "homepage": "https://atoi.app",
+  "repository": "https://github.com/creative-int/atoi-plugins.git",
   "license": "MIT",
   "keywords": [
-    "abbie",
+    "atoi",
     "agent-skills",
     "mcp",
     "projects",
@@ -18,7 +18,7 @@
     "tasks",
     "proof"
   ],
-  "displayName": "Abbie",
+  "displayName": "Atoi",
   "logo": "assets/logo.png",
   "skills": "./skills",
   "mcpServers": "./.mcp.json"

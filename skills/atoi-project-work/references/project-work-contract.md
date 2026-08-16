@@ -1,8 +1,8 @@
-# Abbie Project Work Contract
+# Atoi Project Work Contract
 
 ## One Product Model
 
-Abbie presents the same conceptual sequence in its web, native, CLI, TUI, and
+Atoi presents the same conceptual sequence in its web, native, CLI, TUI, and
 MCP surfaces:
 
 1. A Project contains the durable intent and default Task profile.
@@ -18,21 +18,21 @@ The CLI and MCP tools are interfaces to this model, not separate stores.
 
 | Intent | CLI | MCP |
 | --- | --- | --- |
-| List Projects | `abbie project list --json` | `abbie_projects { action: "list" }` |
-| Create Project | `abbie project create ... --json` | `abbie_projects { action: "create", ... }` |
-| Inspect Project | `abbie project get <id> --json` | `abbie_projects { action: "get", project_id }` |
-| Inspect Workspace | `abbie workspace show --project <id> --json` | `abbie_workspace { action: "show", project_id }` |
-| Bind Workspace | `abbie workspace bind ... --json` | `abbie_workspace { action: "bind", ... }` |
-| Report source truth | `abbie workspace status --project <id> --json` | `abbie_workspace { action: "report", ... }` |
-| Start Task | `abbie task start ... --json` | `abbie_tasks { action: "start", ... }` |
-| Inspect Task | `abbie task get <id> --json` | `abbie_tasks { action: "get", task_id }` |
-| Continue Task | `abbie task continue <id> ... --json` | `abbie_tasks { action: "continue", ... }` |
-| Cancel Task | `abbie task cancel <id> --json` | `abbie_tasks { action: "cancel", task_id }` |
-| Inspect Changes | `abbie task changes <id> --json` | `abbie_tasks { action: "changes", task_id }` |
+| List Projects | `atoi project list --json` | `atoi_projects { action: "list" }` |
+| Create Project | `atoi project create ... --json` | `atoi_projects { action: "create", ... }` |
+| Inspect Project | `atoi project get <id> --json` | `atoi_projects { action: "get", project_id }` |
+| Inspect Workspace | `atoi workspace show --project <id> --json` | `atoi_workspace { action: "show", project_id }` |
+| Bind Workspace | `atoi workspace bind ... --json` | `atoi_workspace { action: "bind", ... }` |
+| Report source truth | `atoi workspace status --project <id> --json` | `atoi_workspace { action: "report", ... }` |
+| Start Task | `atoi task start ... --json` | `atoi_tasks { action: "start", ... }` |
+| Inspect Task | `atoi task get <id> --json` | `atoi_tasks { action: "get", task_id }` |
+| Continue Task | `atoi task continue <id> ... --json` | `atoi_tasks { action: "continue", ... }` |
+| Cancel Task | `atoi task cancel <id> --json` | `atoi_tasks { action: "cancel", task_id }` |
+| Inspect Changes | `atoi task changes <id> --json` | `atoi_tasks { action: "changes", task_id }` |
 
 ## Workspace State
 
-`abbie workspace status` is the preferred local truth command because it
+`atoi workspace status` is the preferred local truth command because it
 inspects Git and validates the result against the Workspace binding before
 reporting it. Pay attention to:
 

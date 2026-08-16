@@ -1,16 +1,16 @@
 {
-  "name": "abbie",
+  "name": "atoi",
   "version": "0.1.0",
-  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+  "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "author": {
     "name": "creative-int",
     "email": "support@creative-int.com"
   },
-  "homepage": "https://abbie.computer",
-  "repository": "https://github.com/creative-int/abbie-plugins.git",
+  "homepage": "https://atoi.app",
+  "repository": "https://github.com/creative-int/atoi-plugins.git",
   "license": "MIT",
   "keywords": [
-    "abbie",
+    "atoi",
     "agent-skills",
     "mcp",
     "projects",
@@ -21,9 +21,9 @@
   "skills": "./skills",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Abbie",
-    "shortDescription": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
-    "longDescription": "Abbie keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
+    "displayName": "Atoi",
+    "shortDescription": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+    "longDescription": "Atoi keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
     "developerName": "creative-int",
     "category": "Developer Tools",
     "capabilities": [
@@ -31,9 +31,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Show my Abbie projects and their workspace status.",
-      "Start a governed Abbie task for this project.",
-      "Review this Abbie task's changes, checks, and proof."
+      "Show my Atoi projects and their workspace status.",
+      "Start a governed Atoi task for this project.",
+      "Review this Atoi task's changes, checks, and proof."
     ],
     "logo": "./assets/logo.png"
   }

@@ -9,5 +9,5 @@
     "target": "ES2023",
     "types": ["node"]
   },
-  "include": ["abbie.config.ts", "tooling/**/*.ts"]
+  "include": ["atoi.config.ts", "tooling/**/*.ts"]
 }

@@ -1,65 +1,65 @@
 ---
-name: abbie
-description: "This skill should be used when an agent needs to operate Abbie through its authenticated MCP bridge, including listing or managing Projects, binding Workspace source truth, starting or following governed Tasks, or reviewing Task proof. Triggers include 'use Abbie', 'open this in Abbie', 'run an Abbie task', 'check the workspace', and 'review the proof'."
+name: atoi
+description: "This skill should be used when an agent needs to operate Atoi through its authenticated MCP bridge, including listing or managing Projects, binding Workspace source truth, starting or following governed Tasks, or reviewing Task proof. Triggers include 'use Atoi', 'open this in Atoi', 'run an Atoi task', 'check the workspace', and 'review the proof'."
 ---
 
-# Abbie
+# Atoi
 
-Operate Abbie through the installed product CLI's credential-safe MCP bridge.
-Abbie remains the authority for Projects, stable Workspaces, governed Tasks,
+Operate Atoi through the installed product CLI's credential-safe MCP bridge.
+Atoi remains the authority for Projects, stable Workspaces, governed Tasks,
 change sets, checks, and proof.
 
 ## Use When
 
-- The user asks to create, inspect, update, archive, or restore an Abbie Project.
+- The user asks to create, inspect, update, archive, or restore an Atoi Project.
 - A Project needs a stable repository, branch, or local-directory binding.
-- Work should run as a durable Abbie Task with explicit result and proof.
+- Work should run as a durable Atoi Task with explicit result and proof.
 - An existing Task needs status, continuation, cancellation, or change review.
 - The user wants a confirmed local apply or proof-backed draft pull request.
 
-Do not use this skill for ordinary file edits that do not need Abbie state, or
-for direct access to Abbie's remote bearer endpoint.
+Do not use this skill for ordinary file edits that do not need Atoi state, or
+for direct access to Atoi's remote bearer endpoint.
 
 ## Authenticate and Connect
 
-The plugin never contains an Abbie credential. The product CLI owns the
-operator token and bridges local stdio to Abbie's authenticated HTTP MCP
+The plugin never contains an Atoi credential. The product CLI owns the
+operator token and bridges local stdio to Atoi's authenticated HTTP MCP
 endpoint.
 
 ```sh
-abbie account login
-abbie account status --json
-abbie mcp status --probe --json
+atoi account login
+atoi account status --json
+atoi mcp status --probe --json
 ```
 
 Clients start the bridge with:
 
 ```sh
-abbie mcp serve
+atoi mcp serve
 ```
 
-`abbie account login` uses browser device authorization unless an operator
+`atoi account login` uses browser device authorization unless an operator
 explicitly supplies `--token`. The resulting operator token stays in the
 CLI's local credential backend. Never request, print, copy, or place that token
 in plugin configuration.
 
 ## Core MCP Tools
 
-- `abbie_projects` manages governed Projects with `list`, `get`, `create`,
+- `atoi_projects` manages governed Projects with `list`, `get`, `create`,
   `update`, `archive`, and `restore`.
-- `abbie_workspace` manages a Project's stable Workspace with `show`, `bind`,
+- `atoi_workspace` manages a Project's stable Workspace with `show`, `bind`,
   `status`, `report`, and `changes`.
-- `abbie_tasks` manages durable Tasks with `list`, `get`, `start`, `cancel`,
+- `atoi_tasks` manages durable Tasks with `list`, `get`, `start`, `cancel`,
   `continue`, `changes`, `apply`, and `draft-pr`.
 
-Prefer these tools when they are mounted. Use the public `abbie` CLI when shell
+Prefer these tools when they are mounted. Use the public `atoi` CLI when shell
 access is needed for local Git inspection or local application.
 
 ## Workflow
 
 ### 1. Resolve the Project
 
-Call `abbie_projects` with `action: "list"` before creating anything. Reuse a
+Call `atoi_projects` with `action: "list"` before creating anything. Reuse a
 matching Project. If none exists, call `action: "create"` with `name`,
 `repo_url`, `repo_branch`, and a `default_task_profile` of `safe` or
 `workspace-write`.
@@ -68,7 +68,7 @@ Capture the returned Project ID.
 
 ### 2. Establish Workspace Truth
 
-Call `abbie_workspace` with:
+Call `atoi_workspace` with:
 
 ```json
 {
@@ -80,12 +80,12 @@ Call `abbie_workspace` with:
 Use `bind` only when the repository, branch, or directory is absent or wrong.
 Use `report` to record an observed revision, dirty state, ahead/behind counts,
 sync state, and preview state. A remote MCP client cannot inspect a local Git
-checkout automatically; use `abbie workspace status --project <id> --json`
+checkout automatically; use `atoi workspace status --project <id> --json`
 from the intended checkout for that proof.
 
 ### 3. Start and Follow a Task
 
-Call `abbie_tasks` with:
+Call `atoi_tasks` with:
 
 ```json
 {
@@ -122,7 +122,7 @@ idempotency key.
 Use the CLI for actual local file application:
 
 ```sh
-abbie task apply <task-id> \
+atoi task apply <task-id> \
   --confirm \
   --expected-change-set-id <change-set-id> \
   --expected-change-set-fingerprint <fingerprint> \
@@ -130,19 +130,19 @@ abbie task apply <task-id> \
   --json
 ```
 
-Call a draft pull request published only when Abbie returns a pull-request URL
+Call a draft pull request published only when Atoi returns a pull-request URL
 or an explicit published state.
 
 ## Example Flows
 
-- Inspect: `abbie_projects list` → `abbie_workspace show` →
-  `abbie_tasks list|get`.
+- Inspect: `atoi_projects list` → `atoi_workspace show` →
+  `atoi_tasks list|get`.
 - New governed work: Project `list|create` → Workspace `show|bind|report` →
   Task `start|get|continue` → `changes`.
 - Apply: Task `get|changes` → local Workspace status → explicit confirmation →
   CLI `task apply` → Task and Workspace readback.
 - Draft PR: Task `get|changes` → explicit confirmation →
-  `abbie_tasks draft-pr` → verify returned URL and proof receipt.
+  `atoi_tasks draft-pr` → verify returned URL and proof receipt.
 
 ## Guardrails
 

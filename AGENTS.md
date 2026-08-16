@@ -1,12 +1,12 @@
-# Abbie Plugins
+# Atoi Plugins
 
-This repository is Abbie's public `agent-plugin-companion`. It distributes
+This repository is Atoi's public `agent-plugin-companion`. It distributes
 portable skills and generated Claude Code, Codex, Cursor, MCP, and registry
-metadata. The Abbie product repo remains the runtime and schema authority.
+metadata. The Atoi product repo remains the runtime and schema authority.
 
 ## Source of truth
 
-`abbie.config.ts` is the single hand-edited source for product identity,
+`atoi.config.ts` is the single hand-edited source for product identity,
 companion metadata, MCP endpoint and authentication posture, supported clients,
 and distributed skills.
 
@@ -38,9 +38,9 @@ unless a task explicitly authorizes them.
 
 ## Boundaries
 
-- The client boundary is `abbie mcp serve`; never put an operator token in a
+- The client boundary is `atoi mcp serve`; never put an operator token in a
   manifest, example, log, receipt, or skill.
-- Skills may use the public Abbie CLI and documented MCP tools. They must not
+- Skills may use the public Atoi CLI and documented MCP tools. They must not
   depend on private paths or another product repository.
 - Do not add workspace, Turbo, Biome, Knip, Codecov, `TESTING.md`, or `.npmrc`
   machinery while this remains an `agent-plugin-companion`.

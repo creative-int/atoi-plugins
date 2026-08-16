@@ -1,11 +1,11 @@
 {
   "declaredOmissions": {
-    "apps": "Public plugin distribution only; Abbie product runtimes remain in the Abbie product repo.",
+    "apps": "Public plugin distribution only; Atoi product runtimes remain in the Atoi product repo.",
     "packages": "No reusable package workspace is owned here.",
     "productRuntime": "No product runtime or backend state is hosted by this companion.",
     "workspaceInfra": "No Turbo, Biome, Knip, Codecov, TESTING.md, pnpm workspace, or private registry machinery."
   },
-  "description": "Public Abbie agent-plugin companion distributing portable skills and generated client, MCP, and registry metadata.",
+  "description": "Public Atoi agent-plugin companion distributing portable skills and generated client, MCP, and registry metadata.",
   "maturity": "production",
   "platformPosture": "tooling-only public plugin companion; no product runtime surface",
   "profile": "agent-plugin-companion",
@@ -13,7 +13,7 @@
     "class": "deterministic",
     "command": "pnpm verify"
   },
-  "repoId": "abbie-plugins",
+  "repoId": "atoi-plugins",
   "repoKind": "agent-plugin-companion",
   "rootShape": {
     "additions": [
@@ -21,7 +21,7 @@
       ".codex-plugin",
       ".cursor-plugin",
       ".mcp.json",
-      "abbie.config.ts",
+      "atoi.config.ts",
       "assets",
       "server.json",
       "skills",
@@ -45,6 +45,6 @@
   },
   "workspace": {
     "packageManager": "pnpm",
-    "sourceOfTruth": "abbie.config.ts"
+    "sourceOfTruth": "atoi.config.ts"
   }
 }

@@ -1,19 +1,19 @@
 {
-  "name": "@creative-int/abbie-plugins",
+  "name": "@creative-int/atoi-plugins",
   "version": "0.1.0",
   "private": true,
   "repoProfile": "agent-plugin-companion",
-  "companionOf": "abbie",
+  "companionOf": "atoi",
   "creativeInt": {
     "repoProfile": "agent-plugin-companion",
-    "companionOf": "abbie",
+    "companionOf": "atoi",
     "workspaceLint": {
-      "allowedRootEntries": ["abbie.config.ts"]
+      "allowedRootEntries": ["atoi.config.ts"]
     }
   },
-  "description": "Portable Abbie skills and generated MCP wiring for Claude Code, Codex, Cursor, and other agent clients.",
+  "description": "Portable Atoi skills and generated MCP wiring for Claude Code, Codex, Cursor, and other agent clients.",
   "keywords": [
-    "abbie",
+    "atoi",
     "agent-skills",
     "mcp",
     "projects",
@@ -21,11 +21,11 @@
     "tasks",
     "proof"
   ],
-  "homepage": "https://abbie.computer",
+  "homepage": "https://atoi.app",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/creative-int/abbie-plugins.git"
+    "url": "https://github.com/creative-int/atoi-plugins.git"
   },
   "type": "module",
   "files": [
@@ -34,7 +34,7 @@
     ".cursor-plugin",
     ".mcp.json",
     "server.json",
-    "abbie.config.ts",
+    "atoi.config.ts",
     "LICENSE",
     "README.md",
     "assets/logo.png",

@@ -1,9 +1,9 @@
-# Abbie Proof and Action Contract
+# Atoi Proof and Action Contract
 
 ## Why the Boundary Exists
 
 A generated diff is not the same thing as an applied change, and an applied
-change is not the same thing as a published pull request. Abbie keeps those
+change is not the same thing as a published pull request. Atoi keeps those
 states distinct:
 
 1. A Task produces a Result.
@@ -20,7 +20,7 @@ Clients should preserve all six states.
 The review anchor is the change set returned by:
 
 ```sh
-abbie task changes <task-id> --json
+atoi task changes <task-id> --json
 ```
 
 Its important fields are:
@@ -50,7 +50,7 @@ The action should fail rather than act on a different artifact.
 
 ## Idempotency
 
-Abbie derives stable defaults:
+Atoi derives stable defaults:
 
 - local apply: `apply:<fingerprint>`
 - draft pull request: `draft-pr:<fingerprint>`
@@ -64,7 +64,7 @@ The CLI performs two coordinated operations:
 
 1. records or prepares the governed action
 2. applies the verified operations to the selected local repository
-3. reports the applied revision back to Abbie
+3. reports the applied revision back to Atoi
 
 The local response includes `localApply`. An already-applied result is an
 idempotent success, not a second write.
@@ -109,7 +109,7 @@ local repository/branch.
 ### Local worktree is dirty
 
 Identify unrelated paths. Do not erase, reset, or silently overwrite them.
-Apply only when Abbie's baseline checks prove the operations are safe.
+Apply only when Atoi's baseline checks prove the operations are safe.
 
 ### Fingerprint changed
 

@@ -1,32 +1,32 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
-  "name": "io.github.creative-int/abbie",
-  "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+  "name": "io.github.creative-int/atoi",
+  "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
   "version": "0.1.0",
-  "websiteUrl": "https://abbie.computer",
+  "websiteUrl": "https://atoi.app",
   "repository": {
-    "url": "https://github.com/creative-int/abbie-plugins",
+    "url": "https://github.com/creative-int/atoi-plugins",
     "source": "github"
   },
   "_meta": {
-    "computer.abbie/companion": {
+    "app.atoi/companion": {
       "repoProfile": "agent-plugin-companion",
-      "companionOf": "abbie",
+      "companionOf": "atoi",
       "mcp": {
-        "name": "abbie",
+        "name": "atoi",
         "endpoint": "https://kindly-terrier-129.convex.site/mcp",
         "auth": "token",
-        "notes": "Clients connect through `abbie mcp serve`. `abbie account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
+        "notes": "Clients connect through `atoi mcp serve`. `atoi account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
       }
     },
-    "computer.abbie/cli-bridge": {
-      "command": "abbie",
+    "app.atoi/cli-bridge": {
+      "command": "atoi",
       "args": [
         "mcp",
         "serve"
       ],
       "transport": "stdio",
-      "authentication": "The installed Abbie CLI reads the operator token locally; plugin manifests contain no credential."
+      "authentication": "The installed Atoi CLI reads the operator token locally; plugin manifests contain no credential."
     }
   }
 }

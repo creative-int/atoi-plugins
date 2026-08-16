@@ -1,36 +1,36 @@
 ---
-name: abbie-proof-review
-description: "This skill should be used when an Abbie Task has produced a change set that needs inspection, when deciding whether to apply it locally or publish a draft pull request, or when verifying an existing action receipt. Triggers include 'review this Abbie task', 'apply the change set', 'make a draft PR', 'check the proof', and 'what did this task change'."
+name: atoi-proof-review
+description: "This skill should be used when an Atoi Task has produced a change set that needs inspection, when deciding whether to apply it locally or publish a draft pull request, or when verifying an existing action receipt. Triggers include 'review this Atoi task', 'apply the change set', 'make a draft PR', 'check the proof', and 'what did this task change'."
 ---
 
-# Abbie Proof Review
+# Atoi Proof Review
 
 Review the authoritative Task change set before any durable action. Keep
-inspection separate from confirmation, and preserve Abbie's idempotency and
+inspection separate from confirmation, and preserve Atoi's idempotency and
 proof receipts.
 
 ## Preconditions
 
-You need a Task ID and a connected Abbie operator identity:
+You need a Task ID and a connected Atoi operator identity:
 
 ```sh
-abbie account status --json
-abbie mcp status --probe --json
+atoi account status --json
+atoi mcp status --probe --json
 ```
 
 If the Task has not reached a review or terminal boundary, return to
-`abbie-project-work`.
+`atoi-project-work`.
 
 ## Workflow
 
 ### 1. Inspect the Task
 
 ```sh
-abbie task get <task-id> --json
-abbie task changes <task-id> --json
+atoi task get <task-id> --json
+atoi task changes <task-id> --json
 ```
 
-With MCP, call `abbie_tasks` with `action: "get"` and then
+With MCP, call `atoi_tasks` with `action: "get"` and then
 `action: "changes"`.
 
 Record:
@@ -53,7 +53,7 @@ or reinterpret it client-side.
 Before a local apply, run from the intended repository:
 
 ```sh
-abbie workspace status --project <project-id> --json
+atoi workspace status --project <project-id> --json
 ```
 
 Verify the local repository and branch match the Workspace binding. Note any
@@ -84,7 +84,7 @@ earlier request to inspect or review.
 Use the public CLI for the actual local write:
 
 ```sh
-abbie task apply <task-id> \
+atoi task apply <task-id> \
   --confirm \
   --expected-change-set-id <change-set-id> \
   --expected-change-set-fingerprint <fingerprint> \
@@ -96,7 +96,7 @@ The expected ID and fingerprint bind confirmation to the inspected artifact.
 The default idempotency key is derived from the fingerprint. Supply an
 explicit `--idempotency-key` only when the caller has a stable key to reuse.
 
-Important: MCP `abbie_tasks` with `action: "apply"` can prepare or record the
+Important: MCP `atoi_tasks` with `action: "apply"` can prepare or record the
 governed action, but it cannot edit the agent's local checkout by itself.
 Do not claim local application unless the CLI returns `localApply` or another
 trusted local host reports an applied revision.
@@ -104,7 +104,7 @@ trusted local host reports an applied revision.
 ### 4B. Publish a Draft Pull Request
 
 ```sh
-abbie task draft-pr <task-id> \
+atoi task draft-pr <task-id> \
   --confirm \
   --expected-change-set-id <change-set-id> \
   --expected-change-set-fingerprint <fingerprint> \
@@ -113,7 +113,7 @@ abbie task draft-pr <task-id> \
   --json
 ```
 
-With MCP, call `abbie_tasks` with:
+With MCP, call `atoi_tasks` with:
 
 - `action: "draft-pr"`
 - `task_id`
@@ -129,7 +129,7 @@ explicit published state. A prepared action receipt is not a remote PR.
 Re-read the Task:
 
 ```sh
-abbie task get <task-id> --json
+atoi task get <task-id> --json
 ```
 
 For local apply, also inspect:
@@ -137,7 +137,7 @@ For local apply, also inspect:
 ```sh
 git status --short
 git diff --check
-abbie workspace status --project <project-id> --json
+atoi workspace status --project <project-id> --json
 ```
 
 Report the returned action ID, proof receipt, idempotency key, and applied

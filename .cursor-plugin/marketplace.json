@@ -1,25 +1,25 @@
 {
-  "name": "abbie",
+  "name": "atoi",
   "owner": {
     "name": "creative-int",
     "email": "support@creative-int.com"
   },
   "metadata": {
-    "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
+    "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
     "repoProfile": "agent-plugin-companion",
-    "companionOf": "abbie",
+    "companionOf": "atoi",
     "mcp": {
-      "name": "abbie",
+      "name": "atoi",
       "endpoint": "https://kindly-terrier-129.convex.site/mcp",
       "auth": "token",
-      "notes": "Clients connect through `abbie mcp serve`. `abbie account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
+      "notes": "Clients connect through `atoi mcp serve`. `atoi account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
     }
   },
   "plugins": [
     {
-      "name": "abbie",
+      "name": "atoi",
       "source": ".",
-      "description": "Operate Abbie Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
+      "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
     }
   ]
 }

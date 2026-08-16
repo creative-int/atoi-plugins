@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { abbieConfig } from "../abbie.config.ts";
+import { atoiConfig } from "../atoi.config.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedJson = [
@@ -33,20 +33,20 @@ const artifacts = Object.fromEntries(
   generatedJson.map((relativePath) => [relativePath, parse(relativePath)]),
 ) as Record<(typeof generatedJson)[number], JsonObject>;
 
-assert.equal(abbieConfig.product, "abbie");
-assert.equal(abbieConfig.companionOf, "abbie");
-assert.equal(abbieConfig.repoProfile, "agent-plugin-companion");
-assert.deepEqual(abbieConfig.clients, ["claude", "codex", "cursor"]);
-assert.equal(abbieConfig.mcp.name, "abbie");
-assert.equal(abbieConfig.mcp.auth, "token");
-assert.match(abbieConfig.mcp.endpoint, /^https:\/\/.+\/mcp$/);
-assert.match(abbieConfig.mcp.notes ?? "", /abbie mcp serve/);
+assert.equal(atoiConfig.product, "atoi");
+assert.equal(atoiConfig.companionOf, "atoi");
+assert.equal(atoiConfig.repoProfile, "agent-plugin-companion");
+assert.deepEqual(atoiConfig.clients, ["claude", "codex", "cursor"]);
+assert.equal(atoiConfig.mcp.name, "atoi");
+assert.equal(atoiConfig.mcp.auth, "token");
+assert.match(atoiConfig.mcp.endpoint, /^https:\/\/.+\/mcp$/);
+assert.match(atoiConfig.mcp.notes ?? "", /atoi mcp serve/);
 
 const mcp = artifacts[".mcp.json"];
 assert.deepEqual(mcp, {
   mcpServers: {
-    abbie: {
-      command: "abbie",
+    atoi: {
+      command: "atoi",
       args: ["mcp", "serve"],
     },
   },
@@ -57,7 +57,7 @@ for (const client of ["claude", "codex", "cursor"] as const) {
     artifacts[
       `.${client === "claude" ? "claude" : client}-plugin/plugin.json`
     ];
-  assert.equal(manifest.name, "abbie");
+  assert.equal(manifest.name, "atoi");
   assert.equal(manifest.version, "0.1.0");
   assert.equal(typeof manifest.description, "string");
   assert.equal(manifest.skills, "./skills");
@@ -65,19 +65,19 @@ for (const client of ["claude", "codex", "cursor"] as const) {
 }
 
 const server = artifacts["server.json"];
-assert.equal(server.name, "io.github.creative-int/abbie");
+assert.equal(server.name, "io.github.creative-int/atoi");
 assert.equal(server.version, "0.1.0");
 assert.equal(
   (server.repository as JsonObject).url,
-  "https://github.com/creative-int/abbie-plugins",
+  "https://github.com/creative-int/atoi-plugins",
 );
 const serverMeta = server._meta as JsonObject;
-const companion = serverMeta["computer.abbie/companion"] as JsonObject;
+const companion = serverMeta["app.atoi/companion"] as JsonObject;
 assert.equal(companion.repoProfile, "agent-plugin-companion");
-assert.equal(companion.companionOf, "abbie");
-assert.deepEqual(companion.mcp, abbieConfig.mcp);
+assert.equal(companion.companionOf, "atoi");
+assert.deepEqual(companion.mcp, atoiConfig.mcp);
 
-for (const skill of abbieConfig.skills) {
+for (const skill of atoiConfig.skills) {
   const skillPath = join(root, skill.dir, "SKILL.md");
   const content = readFileSync(skillPath, "utf8");
   assert.match(content, new RegExp(`^name:\\s*${skill.name}$`, "m"));
@@ -85,8 +85,8 @@ for (const skill of abbieConfig.skills) {
 }
 
 console.log(
-  `smoke passed: ${generatedJson.length} generated JSON files, ${abbieConfig.clients.length} clients, ${abbieConfig.skills.length} skills`,
+  `smoke passed: ${generatedJson.length} generated JSON files, ${atoiConfig.clients.length} clients, ${atoiConfig.skills.length} skills`,
 );
 console.log(
-  `MCP bridge: abbie mcp serve -> ${abbieConfig.mcp.endpoint} (${abbieConfig.mcp.auth})`,
+  `MCP bridge: atoi mcp serve -> ${atoiConfig.mcp.endpoint} (${atoiConfig.mcp.auth})`,
 );

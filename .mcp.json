@@ -1,7 +1,7 @@
 {
   "mcpServers": {
-    "abbie": {
-      "command": "abbie",
+    "atoi": {
+      "command": "atoi",
       "args": [
         "mcp",
         "serve"

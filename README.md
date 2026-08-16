@@ -1,32 +1,32 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Abbie" width="88" height="88" />
+  <img src="assets/logo.png" alt="Atoi" width="88" height="88" />
 </p>
 
-<h1 align="center">Abbie plugins</h1>
+<h1 align="center">Atoi plugins</h1>
 
 <p align="center"><strong>Governed project work, from source truth to proof.</strong></p>
 
 <p align="center">
   The public agent-plugin companion for
-  <a href="https://abbie.computer">Abbie</a>.
+  <a href="https://atoi.app">Atoi</a>.
 </p>
 
 <p align="center">
-  <a href="https://docs.abbie.computer">Documentation</a> ·
-  <a href="https://abbie.computer">Product</a>
+  <a href="https://docs.atoi.app">Documentation</a> ·
+  <a href="https://atoi.app">Product</a>
 </p>
 
 ---
 
 ## What this repo is
 
-`abbie-plugins` distributes portable Abbie skills and generated setup for
+`atoi-plugins` distributes portable Atoi skills and generated setup for
 Claude Code, Codex, and Cursor. It is an `agent-plugin-companion` whose
-`companionOf` product is `abbie`; it does not contain Abbie's backend, task
+`companionOf` product is `atoi`; it does not contain Atoi's backend, task
 runtime, credentials, or product schema.
 
-Every client connects through `abbie mcp serve`. The installed Abbie CLI owns
-the operator token and bridges local stdio to Abbie's authenticated MCP
+Every client connects through `atoi mcp serve`. The installed Atoi CLI owns
+the operator token and bridges local stdio to Atoi's authenticated MCP
 endpoint without placing credentials in this repository.
 
 ## Install
@@ -35,33 +35,33 @@ endpoint without placing credentials in this repository.
 
 ### Prerequisite
 
-Install the Abbie product CLI, connect your operator identity once, and verify the governed bridge.
+Install the Atoi product CLI, connect your operator identity once, and verify the governed bridge.
 
 ```sh
-abbie account login
-abbie mcp status --probe
+atoi account login
+atoi mcp status --probe
 ```
 
 ### Claude Code
 
-Add the companion marketplace and install Abbie. The plugin starts the local credential-safe MCP bridge.
+Add the companion marketplace and install Atoi. The plugin starts the local credential-safe MCP bridge.
 
 ```text
-/plugin marketplace add creative-int/abbie-plugins
-/plugin install abbie@abbie
+/plugin marketplace add creative-int/atoi-plugins
+/plugin install atoi@atoi
 ```
 
 ### Codex
 
-Add the companion marketplace, then install Abbie from the plugin picker. The equivalent direct MCP configuration is shown below.
+Add the companion marketplace, then install Atoi from the plugin picker. The equivalent direct MCP configuration is shown below.
 
 ```sh
-codex plugin marketplace add creative-int/abbie-plugins
+codex plugin marketplace add creative-int/atoi-plugins
 ```
 
 ```toml
-[mcp_servers.abbie]
-command = "abbie"
+[mcp_servers.atoi]
+command = "atoi"
 args = ["mcp", "serve"]
 ```
 
@@ -70,14 +70,14 @@ args = ["mcp", "serve"]
 Add the companion marketplace in Cursor, or place the equivalent MCP configuration in `.cursor/mcp.json`.
 
 ```text
-Cursor → Settings → Plugins → Add marketplace → creative-int/abbie-plugins
+Cursor → Settings → Plugins → Add marketplace → creative-int/atoi-plugins
 ```
 
 ```json
 {
   "mcpServers": {
-    "abbie": {
-      "command": "abbie",
+    "atoi": {
+      "command": "atoi",
       "args": [
         "mcp",
         "serve"
@@ -89,21 +89,21 @@ Cursor → Settings → Plugins → Add marketplace → creative-int/abbie-plugi
 
 ### Portable skills
 
-Install the Abbie skills without a client plugin. This does not connect MCP by itself.
+Install the Atoi skills without a client plugin. This does not connect MCP by itself.
 
 ```sh
-npx skills add creative-int/abbie-plugins
+npx skills add creative-int/atoi-plugins
 ```
 
 <!-- AUTO-GENERATED:INSTALL END -->
 
 ## Included skills
 
-- **`abbie`** — complete MCP bridge guide: authentication, core tools, common
+- **`atoi`** — complete MCP bridge guide: authentication, core tools, common
   Project → Workspace → Task flows, proof review, and mutation guardrails.
-- **`abbie-project-work`** — set up or inspect a Project and stable Workspace,
+- **`atoi-project-work`** — set up or inspect a Project and stable Workspace,
   then follow a governed Task through Result, Changes, Checks, and Proof.
-- **`abbie-proof-review`** — review the authoritative change set and choose
+- **`atoi-proof-review`** — review the authoritative change set and choose
   local apply or a proof-backed draft pull request without bypassing
   confirmation or idempotency.
 
@@ -111,12 +111,12 @@ npx skills add creative-int/abbie-plugins
 
 The governed v1 bridge exposes:
 
-- `abbie_projects`
-- `abbie_workspace`
-- `abbie_tasks`
+- `atoi_projects`
+- `atoi_workspace`
+- `atoi_tasks`
 
-The Abbie backend remains authoritative for every call. See the
-[Abbie documentation](https://docs.abbie.computer) for product concepts and
+The Atoi backend remains authoritative for every call. See the
+[Atoi documentation](https://docs.atoi.app) for product concepts and
 setup.
 
 ## Develop
@@ -128,7 +128,7 @@ pnpm smoke
 pnpm verify
 ```
 
-Generated files must never be hand-edited. Change `abbie.config.ts`, generate,
+Generated files must never be hand-edited. Change `atoi.config.ts`, generate,
 smoke, and commit the resulting artifacts together.
 
 ## License

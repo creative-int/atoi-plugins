@@ -2,41 +2,41 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { abbieConfig } from "../abbie.config.ts";
+import { atoiConfig } from "../atoi.config.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const check = process.argv.includes("--check");
 const version = "0.1.0";
-const displayName = "Abbie";
-const repository = `https://github.com/creative-int/${abbieConfig.product}-plugins`;
+const displayName = "Atoi";
+const repository = `https://github.com/creative-int/${atoiConfig.product}-plugins`;
 const repositorySlug = repository.replace("https://github.com/", "");
 const repositoryGit = `${repository}.git`;
-const homepage = `https://${abbieConfig.product}.computer`;
-const docs = `https://docs.${abbieConfig.product}.computer`;
+const homepage = `https://${atoiConfig.product}.app`;
+const docs = `https://docs.${atoiConfig.product}.app`;
 const author = {
   name: "creative-int",
   email: "support@creative-int.com",
 };
-const primarySkill = abbieConfig.skills.find(
-  (skill) => skill.name === abbieConfig.product,
+const primarySkill = atoiConfig.skills.find(
+  (skill) => skill.name === atoiConfig.product,
 );
 
 if (!primarySkill) {
-  throw new Error(`Missing primary ${abbieConfig.product} skill in config.`);
+  throw new Error(`Missing primary ${atoiConfig.product} skill in config.`);
 }
 
 const description = primarySkill.description;
 const bridge = {
-  command: abbieConfig.product,
+  command: atoiConfig.product,
   args: ["mcp", "serve"],
 };
 const mcpConfig = {
   mcpServers: {
-    [abbieConfig.mcp.name]: bridge,
+    [atoiConfig.mcp.name]: bridge,
   },
 };
 const keywords = [
-  abbieConfig.product,
+  atoiConfig.product,
   "agent-skills",
   "mcp",
   "projects",
@@ -45,22 +45,22 @@ const keywords = [
   "proof",
 ];
 const profileMetadata = {
-  repoProfile: abbieConfig.repoProfile,
-  companionOf: abbieConfig.companionOf,
-  mcp: abbieConfig.mcp,
+  repoProfile: atoiConfig.repoProfile,
+  companionOf: atoiConfig.companionOf,
+  mcp: atoiConfig.mcp,
 };
 const json = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 
-function clientInstall(client: (typeof abbieConfig.clients)[number]) {
+function clientInstall(client: (typeof atoiConfig.clients)[number]) {
   if (client === "claude") {
     return [
       "### Claude Code",
       "",
-      "Add the companion marketplace and install Abbie. The plugin starts the local credential-safe MCP bridge.",
+      "Add the companion marketplace and install Atoi. The plugin starts the local credential-safe MCP bridge.",
       "",
       "```text",
       `/plugin marketplace add ${repositorySlug}`,
-      `/plugin install ${abbieConfig.product}@${abbieConfig.product}`,
+      `/plugin install ${atoiConfig.product}@${atoiConfig.product}`,
       "```",
     ].join("\n");
   }
@@ -68,14 +68,14 @@ function clientInstall(client: (typeof abbieConfig.clients)[number]) {
     return [
       "### Codex",
       "",
-      "Add the companion marketplace, then install Abbie from the plugin picker. The equivalent direct MCP configuration is shown below.",
+      "Add the companion marketplace, then install Atoi from the plugin picker. The equivalent direct MCP configuration is shown below.",
       "",
       "```sh",
       `codex plugin marketplace add ${repositorySlug}`,
       "```",
       "",
       "```toml",
-      `[mcp_servers.${abbieConfig.mcp.name}]`,
+      `[mcp_servers.${atoiConfig.mcp.name}]`,
       `command = "${bridge.command}"`,
       `args = ["${bridge.args.join('", "')}"]`,
       "```",
@@ -99,7 +99,7 @@ function clientInstall(client: (typeof abbieConfig.clients)[number]) {
 const generatedFiles: Record<string, string> = {
   ".mcp.json": json(mcpConfig),
   ".claude-plugin/plugin.json": json({
-    name: abbieConfig.product,
+    name: atoiConfig.product,
     version,
     description,
     author,
@@ -112,11 +112,11 @@ const generatedFiles: Record<string, string> = {
     mcpServers: "./.mcp.json",
   }),
   ".claude-plugin/marketplace.json": json({
-    name: abbieConfig.product,
+    name: atoiConfig.product,
     owner: author,
     plugins: [
       {
-        name: abbieConfig.product,
+        name: atoiConfig.product,
         displayName,
         source: "./",
         description,
@@ -124,7 +124,7 @@ const generatedFiles: Record<string, string> = {
     ],
   }),
   ".codex-plugin/plugin.json": json({
-    name: abbieConfig.product,
+    name: atoiConfig.product,
     version,
     description,
     author,
@@ -138,20 +138,20 @@ const generatedFiles: Record<string, string> = {
       displayName,
       shortDescription: description,
       longDescription:
-        "Abbie keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
+        "Atoi keeps project intent, stable Workspace source truth, durable Tasks, exact change sets, checks, and proof in one governed workflow.",
       developerName: author.name,
       category: "Developer Tools",
       capabilities: ["Read", "Write"],
       defaultPrompt: [
-        "Show my Abbie projects and their workspace status.",
-        "Start a governed Abbie task for this project.",
-        "Review this Abbie task's changes, checks, and proof.",
+        "Show my Atoi projects and their workspace status.",
+        "Start a governed Atoi task for this project.",
+        "Review this Atoi task's changes, checks, and proof.",
       ],
       logo: "./assets/logo.png",
     },
   }),
   ".cursor-plugin/plugin.json": json({
-    name: abbieConfig.product,
+    name: atoiConfig.product,
     version,
     description,
     author,
@@ -165,7 +165,7 @@ const generatedFiles: Record<string, string> = {
     mcpServers: "./.mcp.json",
   }),
   ".cursor-plugin/marketplace.json": json({
-    name: abbieConfig.product,
+    name: atoiConfig.product,
     owner: author,
     metadata: {
       description,
@@ -173,7 +173,7 @@ const generatedFiles: Record<string, string> = {
     },
     plugins: [
       {
-        name: abbieConfig.product,
+        name: atoiConfig.product,
         source: ".",
         description,
       },
@@ -182,18 +182,18 @@ const generatedFiles: Record<string, string> = {
   "server.json": json({
     $schema:
       "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
-    name: "io.github.creative-int/abbie",
+    name: "io.github.creative-int/atoi",
     description,
     version,
     websiteUrl: homepage,
     repository: { url: repository, source: "github" },
     _meta: {
-      "computer.abbie/companion": profileMetadata,
-      "computer.abbie/cli-bridge": {
+      "app.atoi/companion": profileMetadata,
+      "app.atoi/cli-bridge": {
         ...bridge,
         transport: "stdio",
         authentication:
-          "The installed Abbie CLI reads the operator token locally; plugin manifests contain no credential.",
+          "The installed Atoi CLI reads the operator token locally; plugin manifests contain no credential.",
       },
     },
   }),
@@ -220,21 +220,21 @@ function installBlock() {
   return [
     "### Prerequisite",
     "",
-    "Install the Abbie product CLI, connect your operator identity once, and verify the governed bridge.",
+    "Install the Atoi product CLI, connect your operator identity once, and verify the governed bridge.",
     "",
     "```sh",
-    "abbie account login",
-    "abbie mcp status --probe",
+    "atoi account login",
+    "atoi mcp status --probe",
     "```",
     "",
-    ...abbieConfig.clients.flatMap((client, index) => [
+    ...atoiConfig.clients.flatMap((client, index) => [
       clientInstall(client),
-      ...(index === abbieConfig.clients.length - 1 ? [] : [""]),
+      ...(index === atoiConfig.clients.length - 1 ? [] : [""]),
     ]),
     "",
     "### Portable skills",
     "",
-    "Install the Abbie skills without a client plugin. This does not connect MCP by itself.",
+    "Install the Atoi skills without a client plugin. This does not connect MCP by itself.",
     "",
     "```sh",
     `npx skills add ${repositorySlug}`,
