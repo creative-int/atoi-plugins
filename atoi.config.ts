@@ -45,6 +45,10 @@ export type AtoiPluginsConfig = {
     installCommand: string;
     installScript: string;
   };
+  door: {
+    resource: string;
+    scope: string;
+  };
   clients: ClientId[];
 };
 
@@ -110,6 +114,10 @@ export const atoiConfig: AtoiPluginsConfig = {
     package: "@creative-int/atoi-cli",
     installCommand: "npm install -g @creative-int/atoi-cli",
     installScript: "curl -fsSL https://atoi.app/install.sh | bash",
+  },
+  door: {
+    resource: "https://atoi.app/api/mcp",
+    scope: "operator",
   },
   clients: ["claude-code", "codex", "cursor"],
 };

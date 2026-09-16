@@ -47,7 +47,8 @@
     "typecheck": "tsc --noEmit",
     "smoke": "node tooling/smoke.ts",
     "verify": "pnpm run check:generated && pnpm run typecheck && pnpm run smoke",
-    "proof:install": "node tooling/install-proof.ts"
+    "proof:install": "node tooling/install-proof.ts",
+    "proof:door": "node tooling/door-proof.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

@@ -117,7 +117,10 @@ authenticated `/mcp` endpoint (`atoi mcp status` prints it). No manifest,
 example or skill in this repository contains a credential.
 
 ChatGPT and Claude.ai cannot start a local process, so they need Atoi's hosted
-OAuth connection, which is not available yet.
+OAuth connection at `https://atoi.app/api/mcp`, which is not available yet.
+[`docs/proofs/door`](docs/proofs/door/README.md) records its discovery chain as
+a hosted client meets it; the plugin switches to the remote door only once
+that proof is green.
 
 ## Repository layout
 
@@ -133,6 +136,7 @@ plugins/atoi/                    the plugin (Agent Plugins 1.0.0)
 atoi.config.ts                   the one hand-edited source
 tooling/                         generate, smoke, install proof, the vendored MCP reference
 docs/proofs/install/             per-client install proofs with receipts
+docs/proofs/door/                OAuth discovery proofs for the remote door
 ```
 
 Every manifest and catalog is generated from `atoi.config.ts`; the skills are
@@ -154,6 +158,11 @@ a private path or a token.
 `pnpm proof:install --source creative-int/atoi-plugins --record` installs the
 published plugin from a fresh clone into Claude Code, Codex and Cursor, and
 writes what each client reports to [`docs/proofs/install`](docs/proofs/install/README.md).
+
+`pnpm proof:door --record` walks the OAuth discovery chain of
+`https://atoi.app/api/mcp` without a credential and writes the result to
+[`docs/proofs/door`](docs/proofs/door/README.md). `pnpm verify` refuses a remote
+entry in `plugins/atoi/mcp.json` until the newest receipt for its URL is proven.
 
 ## License
 

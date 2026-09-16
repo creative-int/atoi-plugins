@@ -47,6 +47,10 @@ Run `pnpm verify` before every commit. After pushing a change to `plugins/` or a
 catalog, run `pnpm proof:install --source creative-int/atoi-plugins --record`
 and commit the receipt: a client install path is claimed only with a receipt.
 
+The plugin declares the remote door (`https://atoi.app/api/mcp`) only after
+`pnpm proof:door --record` is proven for that URL; smoke enforces it. Until then
+`plugins/atoi/mcp.json` stays the stdio bridge.
+
 When the product's MCP registry changes, copy
 `apps/docs/src/generated/mcp-reference.json` from the Atoi repo at a named
 commit into `tooling/reference/`, update `SOURCE.json`, regenerate, and bump

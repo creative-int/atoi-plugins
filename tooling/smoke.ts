@@ -72,6 +72,22 @@ checks.push("plugin.json conforms to Agent Plugins 1.0.0 and carries the Codex i
 
 const mcpConfig = readJson(join(pluginRoot, "mcp.json"));
 assert.deepEqual(validateMcpConfig(mcpConfig), [], "mcp.json");
+const doorProofs = join(root, "docs/proofs/door");
+const doorReceipts = lstatSync(doorProofs, { throwIfNoEntry: false })?.isDirectory()
+  ? readdirSync(doorProofs)
+      .filter((entry) => entry.endsWith(".json"))
+      .map((entry) => readJson(join(doorProofs, entry)))
+      .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+  : [];
+for (const [name, server] of Object.entries(mcpConfig.mcpServers as Record<string, Json>)) {
+  if (server.type !== "streamable-http" && server.type !== "sse") continue;
+  const newest = doorReceipts.find((receipt) => receipt.resource === server.url);
+  assert(
+    newest?.status === "proven" && newest.checks.every((c: Json) => c.held && c.observed),
+    `mcp.json server ${name} points at ${server.url}, but the newest \`pnpm proof:door\` receipt for it is ${newest ? `${newest.status} (${newest.held}/${newest.total}, ${newest.timestamp})` : "missing"}. A remote entry ships only after the door is proven.`,
+  );
+}
+checks.push("a remote MCP entry requires the newest door receipt for its URL to be proven");
 assert.deepEqual(mcpConfig.mcpServers, {
   [mcp.server]: { type: "stdio", command: mcp.command, args: mcp.args },
 });

@@ -1,0 +1,188 @@
+{
+  "runId": "682e05e8-5822-44db-bb2e-cbd488418b55",
+  "timestamp": "2026-09-16T20:55:58.518Z",
+  "resource": "https://atoi.app/api/mcp",
+  "scope": "operator",
+  "status": "failed",
+  "held": 0,
+  "total": 19,
+  "load": {
+    "start": [
+      71.06,
+      131.61,
+      144.82
+    ],
+    "end": [
+      71.06,
+      131.61,
+      144.82
+    ]
+  },
+  "checks": [
+    {
+      "claim": "an unauthenticated MCP request is refused by the door itself: 401 with a Bearer challenge",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization §Error Handling; RFC 6750 §3",
+      "held": false,
+      "observed": true,
+      "evidence": "401 application/json {\"error\":\"Unauthorized\"} | WWW-Authenticate: absent"
+    },
+    {
+      "claim": "the 401 carries a Bearer challenge with an https resource_metadata",
+      "source": "https://claude.com/docs/connectors/building/authentication §DCR and CIMD details (\"Always return a 401 with a WWW-Authenticate header\")",
+      "held": false,
+      "observed": true,
+      "evidence": "no WWW-Authenticate header"
+    },
+    {
+      "claim": "the challenge names scope=\"operator\"",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization §Scope Selection Strategy; ~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md §3.3",
+      "held": false,
+      "observed": true,
+      "evidence": "no WWW-Authenticate header"
+    },
+    {
+      "claim": "path-inserted protected resource metadata is served at https://atoi.app/.well-known/oauth-protected-resource/api/mcp as JSON, with no redirect",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery §Protected Resource Metadata Discovery Requirements",
+      "held": false,
+      "observed": true,
+      "evidence": "307 → /login?redirect_url=%2F.well-known%2Foauth-protected-resource%2Fapi%2Fmcp text/plain Redirecting..."
+    },
+    {
+      "claim": "root protected resource metadata is served at https://atoi.app/.well-known/oauth-protected-resource as JSON, with no redirect",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery §Protected Resource Metadata Discovery Requirements",
+      "held": false,
+      "observed": true,
+      "evidence": "307 → /login?redirect_url=%2F.well-known%2Foauth-protected-resource text/plain Redirecting..."
+    },
+    {
+      "claim": "metadata resource equals https://atoi.app/api/mcp exactly",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no protected resource metadata was served"
+    },
+    {
+      "claim": "metadata names an https authorization server first",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no protected resource metadata was served"
+    },
+    {
+      "claim": "metadata scopes_supported includes operator and not offline_access",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no protected resource metadata was served"
+    },
+    {
+      "claim": "authorization server metadata is served as JSON, with no redirect",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server was named"
+    },
+    {
+      "claim": "issuer equals the named authorization server exactly",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery (\"MUST be identical\")",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "authorization_endpoint and token_endpoint are https",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization §Authorization Flow Steps",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "code_challenge_methods_supported includes S256",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations §Authorization Code Protection",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "client_id_metadata_document_supported is true and token_endpoint_auth_methods_supported includes none",
+      "source": "https://claude.com/docs/connectors/building/authentication §DCR and CIMD details",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "authorization_response_iss_parameter_supported is true",
+      "source": "https://developers.openai.com/plugins/build/auth §Protect callbacks with issuer identification",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "grant_types_supported includes authorization_code and refresh_token",
+      "source": "~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md §3.6",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "registration_endpoint is https (the DCR fallback Cursor documents)",
+      "source": "https://cursor.com/docs/mcp; ~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md §3.4",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "scopes_supported lists offline_access, so hosted clients ask for refresh",
+      "source": "https://claude.com/docs/connectors/building/authentication §DCR and CIMD details",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization server metadata was served"
+    },
+    {
+      "claim": "an authorization request without PKCE is refused back to the client's redirect with error and iss",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no authorization endpoint was advertised"
+    },
+    {
+      "claim": "the token endpoint takes form-urlencoded and answers an unknown code with an RFC 6749 error",
+      "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "held": false,
+      "observed": false,
+      "evidence": "unobserved: no token endpoint was advertised"
+    }
+  ],
+  "exchanges": [
+    {
+      "request": "unauthenticated MCP request: POST https://atoi.app/api/mcp",
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "body": "{\"error\":\"Unauthorized\"}"
+    },
+    {
+      "request": "path-inserted protected resource metadata: GET https://atoi.app/.well-known/oauth-protected-resource/api/mcp",
+      "status": 307,
+      "headers": {
+        "location": "/login?redirect_url=%2F.well-known%2Foauth-protected-resource%2Fapi%2Fmcp",
+        "content-type": "text/plain",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "body": "Redirecting...\n"
+    },
+    {
+      "request": "root protected resource metadata: GET https://atoi.app/.well-known/oauth-protected-resource",
+      "status": 307,
+      "headers": {
+        "location": "/login?redirect_url=%2F.well-known%2Foauth-protected-resource",
+        "content-type": "text/plain",
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "body": "Redirecting...\n"
+    }
+  ],
+  "proofClass": "Unauthenticated discovery of the MCP door as a hosted client meets it: the 401 challenge, protected resource and authorization server metadata, an authorization request refused for missing PKCE, and a token request with an unknown code. No credential is used. Not proven here: consent, token issuance, audience binding, refresh rotation, revocation, or any real client's login."
+}
