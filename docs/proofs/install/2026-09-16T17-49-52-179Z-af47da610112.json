@@ -1,0 +1,472 @@
+{
+  "runId": "8932cd56-dc2b-4670-a91d-be36d40f3287",
+  "timestamp": "2026-09-16T17:49:52.179Z",
+  "source": "github:creative-int/atoi-plugins",
+  "commit": "af47da61011233a3342274d4a81bb33d55507eed",
+  "plugin": {
+    "name": "atoi",
+    "version": "0.2.0",
+    "skills": [
+      "atoi",
+      "atoi-project-work",
+      "atoi-proof-review"
+    ]
+  },
+  "pluginJsonSha256": "e1ddd15d92d96f3f65423ace8371efb99400343dd5e8f8629f670667760ce0ef",
+  "mcpJsonSha256": "7f01c666e0a883e11c34cb0630661179aa5a09c50139b9da63315f3b53f37e31",
+  "operator": {
+    "connected": false,
+    "summary": "Atoi operator access is disconnected"
+  },
+  "results": [
+    {
+      "client": "claude-code",
+      "status": "proven",
+      "clientVersion": "2.1.273 (Claude Code)",
+      "commit": "af47da61011233a3342274d4a81bb33d55507eed",
+      "assertions": [
+        {
+          "claim": "claude plugin validate accepts the marketplace",
+          "held": true,
+          "evidence": "Validating marketplace manifest: <run>/claude-clone/.claude-plugin/marketplace.json\n\n✔ Validation passed\n"
+        },
+        {
+          "claim": "the marketplace adds",
+          "held": true,
+          "evidence": "Adding marketplace…SSH not configured, cloning via HTTPS: https://github.com/creative-int/atoi-plugins.git\nRefreshing marketplace cache (timeout: 120s)…\nCloning repository (timeout: 120s): https://github.com/creative-int/atoi-plugins.git\nClone complete, validating marketplace…\nCleaning up old marketplace cache…\n✔ Successfully added marketplace: atoi (declared in user settings)\n"
+        },
+        {
+          "claim": "atoi@atoi installs",
+          "held": true,
+          "evidence": "Installing plugin \"atoi@atoi\"...✔ Successfully installed plugin: atoi@atoi (scope: user)\n"
+        },
+        {
+          "claim": "installed version is 0.2.0",
+          "held": true,
+          "evidence": "[\n  {\n    \"id\": \"atoi@atoi\",\n    \"version\": \"0.2.0\",\n    \"scope\": \"user\",\n    \"enabled\": true,\n    \"installPath\": \"<run>/claude-home/plugins/cache/atoi/atoi/0.2.0\",\n    \"installedAt\": \"2026-09-16T17:45:29.344Z\",\n    \"lastUpdated\": \"2026-09-16T17:45:29.344Z\",\n    \"mcpServers\": {\n      \"atoi\": {\n        \"type\": \"stdio\",\n        \"command\": \"atoi\",\n        \"args\": [\n          \"mcp\",\n          \"serve\"\n        ]\n      }\n    }\n  }\n]\n"
+        },
+        {
+          "claim": "the installed plugin declares the stdio bridge from the portable mcp.json",
+          "held": true,
+          "evidence": "{\"atoi\":{\"type\":\"stdio\",\"command\":\"atoi\",\"args\":[\"mcp\",\"serve\"]}}"
+        },
+        {
+          "claim": "Claude Code loads the skills atoi, atoi-project-work, atoi-proof-review",
+          "held": true,
+          "evidence": "Skills (3)  atoi, atoi-project-work, atoi-proof-review"
+        },
+        {
+          "claim": "Claude Code registers plugin:atoi:atoi as `atoi mcp serve`",
+          "held": true,
+          "evidence": "plugin:atoi:atoi: atoi mcp serve - ✘ Failed to connect — -32000: MCP error -32000: Connection closed"
+        }
+      ],
+      "notes": [
+        "marketplace source: creative-int/atoi-plugins",
+        "bridge connection as observed by Claude Code: ✘ Failed to connect — -32000: MCP error -32000: Connection closed"
+      ],
+      "steps": [
+        {
+          "argv": [
+            "claude",
+            "--version"
+          ],
+          "exit": 0,
+          "ms": 12,
+          "output": "2.1.273 (Claude Code)\n"
+        },
+        {
+          "argv": [
+            "git",
+            "clone",
+            "--quiet",
+            "https://github.com/creative-int/atoi-plugins.git",
+            "<run>/claude-clone"
+          ],
+          "exit": 0,
+          "ms": 2088,
+          "output": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "<run>/claude-clone",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "ms": 15,
+          "output": "af47da61011233a3342274d4a81bb33d55507eed\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "plugin",
+            "validate",
+            "<run>/claude-clone"
+          ],
+          "exit": 0,
+          "ms": 322,
+          "output": "Validating marketplace manifest: <run>/claude-clone/.claude-plugin/marketplace.json\n\n✔ Validation passed\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "plugin",
+            "marketplace",
+            "add",
+            "creative-int/atoi-plugins"
+          ],
+          "exit": 0,
+          "ms": 1714,
+          "output": "Adding marketplace…SSH not configured, cloning via HTTPS: https://github.com/creative-int/atoi-plugins.git\nRefreshing marketplace cache (timeout: 120s)…\nCloning repository (timeout: 120s): https://github.com/creative-int/atoi-plugins.git\nClone complete, validating marketplace…\nCleaning up old marketplace cache…\n✔ Successfully added marketplace: atoi (declared in user settings)\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "plugin",
+            "install",
+            "atoi@atoi"
+          ],
+          "exit": 0,
+          "ms": 357,
+          "output": "Installing plugin \"atoi@atoi\"...✔ Successfully installed plugin: atoi@atoi (scope: user)\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "plugin",
+            "list",
+            "--json"
+          ],
+          "exit": 0,
+          "ms": 152,
+          "output": "[\n  {\n    \"id\": \"atoi@atoi\",\n    \"version\": \"0.2.0\",\n    \"scope\": \"user\",\n    \"enabled\": true,\n    \"installPath\": \"<run>/claude-home/plugins/cache/atoi/atoi/0.2.0\",\n    \"installedAt\": \"2026-09-16T17:45:29.344Z\",\n    \"lastUpdated\": \"2026-09-16T17:45:29.344Z\",\n    \"mcpServers\": {\n      \"atoi\": {\n        \"type\": \"stdio\",\n        \"command\": \"atoi\",\n        \"args\": [\n          \"mcp\",\n          \"serve\"\n        ]\n      }\n    }\n  }\n]\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "plugin",
+            "details",
+            "atoi@atoi"
+          ],
+          "exit": 0,
+          "ms": 159,
+          "output": "Atoi (atoi) 0.2.0\n  Description: Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.\n  Source: atoi@atoi\n\nComponent inventory\n  Skills (3)  atoi, atoi-project-work, atoi-proof-review\n  Agents (0)\n  Hooks (0)\n  MCP servers (0)\n  LSP servers (0)\n\nProjected token cost\n  Always-on:   ~278 tok   added to every session\n\nPer-component (rounded)\n  component          always-on  on-invoke\n  atoi-project-work       ~100      ~1.2k\n  atoi-proof-review        ~90      ~1.1k\n  atoi                     ~90      ~1.3k\n\n  On-invoke cost is paid each time a skill or agent fires.\n  Token counts are estimates and may differ from actual usage.\n"
+        },
+        {
+          "argv": [
+            "claude",
+            "mcp",
+            "list"
+          ],
+          "exit": 0,
+          "ms": 1004,
+          "output": "Checking MCP server health…\n\nplugin:atoi:atoi: atoi mcp serve - ✘ Failed to connect — -32000: MCP error -32000: Connection closed\natoi: atoi mcp serve - ⏸ Pending approval (run `claude` to approve)\n"
+        }
+      ]
+    },
+    {
+      "client": "codex",
+      "status": "proven",
+      "clientVersion": "codex-cli 0.153.4",
+      "commit": "af47da61011233a3342274d4a81bb33d55507eed",
+      "assertions": [
+        {
+          "claim": "the marketplace adds",
+          "held": true,
+          "evidence": "Added marketplace `atoi` from https://github.com/creative-int/atoi-plugins.git.\nInstalled marketplace root: <run>/codex-home/.tmp/marketplaces/atoi\n"
+        },
+        {
+          "claim": "Codex reads the catalog at .agents/plugins/marketplace.json",
+          "held": true,
+          "evidence": "Marketplace `atoi`\n<run>/codex-home/.tmp/marketplaces/atoi/.agents/plugins/marketplace.json\n\nPLUGIN     STATUS         VERSION  SOURCE\natoi@atoi  not installed           <run>/codex-home/.tmp/marketplaces/atoi/plugins/atoi\n"
+        },
+        {
+          "claim": "atoi@atoi installs at 0.2.0",
+          "held": true,
+          "evidence": "{\n  \"pluginId\": \"atoi@atoi\",\n  \"name\": \"atoi\",\n  \"marketplaceName\": \"atoi\",\n  \"version\": \"0.2.0\",\n  \"installedPath\": \"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\",\n  \"authPolicy\": \"ON_USE\"\n}\n"
+        },
+        {
+          "claim": "Codex loads the stdio bridge from the portable mcp.json with PLUGIN_ROOT and PLUGIN_DATA",
+          "held": true,
+          "evidence": "{\"name\":\"atoi\",\"enabled\":true,\"disabled_reason\":null,\"transport\":{\"type\":\"stdio\",\"command\":\"atoi\",\"args\":[\"mcp\",\"serve\"],\"env\":{\"PLUGIN_ROOT\":\"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\",\"PLUGIN_DATA\":\"<run>/codex-home/plugins/data/agent-plugins/0a7f4d8398f3ed7770af81f03dcbcb2e820269be6e2ed09e25bba25c0390927e\"},\"env_vars\":[],\"cwd\":\"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\"},\"startup_timeout_sec\":null,\"tool_timeout_sec\":null,\"auth_status\":\"unsupported\"}"
+        },
+        {
+          "claim": "the model-visible prompt lists atoi:atoi, atoi:atoi-project-work, atoi:atoi-proof-review from the installed cache",
+          "held": true,
+          "evidence": "all 3 skill(s) resolve into the installed cache"
+        }
+      ],
+      "notes": [
+        "marketplace source: creative-int/atoi-plugins"
+      ],
+      "steps": [
+        {
+          "argv": [
+            "codex",
+            "--version"
+          ],
+          "exit": 0,
+          "ms": 106,
+          "output": "codex-cli 0.153.4\n"
+        },
+        {
+          "argv": [
+            "git",
+            "clone",
+            "--quiet",
+            "https://github.com/creative-int/atoi-plugins.git",
+            "<run>/codex-clone"
+          ],
+          "exit": 0,
+          "ms": 762,
+          "output": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "<run>/codex-clone",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "ms": 14,
+          "output": "af47da61011233a3342274d4a81bb33d55507eed\n"
+        },
+        {
+          "argv": [
+            "codex",
+            "plugin",
+            "marketplace",
+            "add",
+            "creative-int/atoi-plugins"
+          ],
+          "exit": 0,
+          "ms": 1357,
+          "output": "Added marketplace `atoi` from https://github.com/creative-int/atoi-plugins.git.\nInstalled marketplace root: <run>/codex-home/.tmp/marketplaces/atoi\n"
+        },
+        {
+          "argv": [
+            "codex",
+            "plugin",
+            "list"
+          ],
+          "exit": 0,
+          "ms": 49,
+          "output": "Marketplace `atoi`\n<run>/codex-home/.tmp/marketplaces/atoi/.agents/plugins/marketplace.json\n\nPLUGIN     STATUS         VERSION  SOURCE\natoi@atoi  not installed           <run>/codex-home/.tmp/marketplaces/atoi/plugins/atoi\n"
+        },
+        {
+          "argv": [
+            "codex",
+            "plugin",
+            "add",
+            "atoi@atoi",
+            "--json"
+          ],
+          "exit": 0,
+          "ms": 48,
+          "output": "{\n  \"pluginId\": \"atoi@atoi\",\n  \"name\": \"atoi\",\n  \"marketplaceName\": \"atoi\",\n  \"version\": \"0.2.0\",\n  \"installedPath\": \"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\",\n  \"authPolicy\": \"ON_USE\"\n}\n"
+        },
+        {
+          "argv": [
+            "codex",
+            "mcp",
+            "list",
+            "--json"
+          ],
+          "exit": 0,
+          "ms": 68,
+          "output": "[\n  {\n    \"name\": \"atoi\",\n    \"enabled\": true,\n    \"disabled_reason\": null,\n    \"transport\": {\n      \"type\": \"stdio\",\n      \"command\": \"atoi\",\n      \"args\": [\n        \"mcp\",\n        \"serve\"\n      ],\n      \"env\": {\n        \"PLUGIN_ROOT\": \"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\",\n        \"PLUGIN_DATA\": \"<run>/codex-home/plugins/data/agent-plugins/0a7f4d8398f3ed7770af81f03dcbcb2e820269be6e2ed09e25bba25c0390927e\"\n      },\n      \"env_vars\": [],\n      \"cwd\": \"<run>/codex-home/plugins/cache/atoi/atoi/0.2.0\"\n    },\n    \"startup_timeout_sec\": null,\n    \"tool_timeout_sec\": null,\n    \"auth_status\": \"unsupported\"\n  }\n]\n"
+        },
+        {
+          "argv": [
+            "codex",
+            "debug",
+            "prompt-input",
+            "ping"
+          ],
+          "exit": 0,
+          "ms": 651,
+          "output": "<withheld: 33967 bytes, sha256 0c8ef2d666145e79e6b1a1d6cd7aafac9d2703f7aeca72e93e01d1fb94d5d65d>"
+        }
+      ]
+    },
+    {
+      "client": "cursor",
+      "status": "failed",
+      "clientVersion": "2026.08.11-e8db854",
+      "commit": "af47da61011233a3342274d4a81bb33d55507eed",
+      "assertions": [
+        {
+          "claim": "Cursor registers the plugin's MCP server as plugin-atoi-atoi",
+          "held": true,
+          "evidence": "[2026-09-16T17:48:36.669Z] logger {\"message\":\"MCP OAuth provider initialized\",\"metadata\":{\"event\":\"mcp_oauth_provider_initialized\",\"cursorMcp\":{\"oauth\":{\"identifier\":\"plugin-atoi-atoi\"}}}}"
+        },
+        {
+          "claim": "Cursor starts `atoi mcp serve` for it",
+          "held": true,
+          "evidence": "the bridge's own stderr reached Cursor: MCP error -32000: Connection closed; stderr: AtoiConfigError: Atoi operator login required. Run `atoi account login`. Code: [REDACTED]"
+        },
+        {
+          "claim": "Cursor's skill count rises by 3 with the plugin directory",
+          "held": false,
+          "evidence": "baseline 264, with plugin 264"
+        }
+      ],
+      "notes": [
+        "plugin directory: fresh clone of creative-int/atoi-plugins",
+        "bridge connection as observed by Cursor: MCP error -32000: Connection closed; stderr: AtoiConfigError: Atoi operator login required. Run `atoi account login`. Code: [REDACTED]"
+      ],
+      "steps": [
+        {
+          "argv": [
+            "cursor-agent",
+            "--version"
+          ],
+          "exit": 0,
+          "ms": 578,
+          "output": "2026.08.11-e8db854\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "status"
+          ],
+          "exit": 0,
+          "ms": 1020,
+          "output": "✓ Logged in as <email>\n"
+        },
+        {
+          "argv": [
+            "git",
+            "clone",
+            "--quiet",
+            "https://github.com/creative-int/atoi-plugins.git",
+            "<run>/cursor-clone"
+          ],
+          "exit": 0,
+          "ms": 1123,
+          "output": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "<run>/cursor-clone",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "ms": 13,
+          "output": "af47da61011233a3342274d4a81bb33d55507eed\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "Reply with the single word OK."
+          ],
+          "exit": 1,
+          "ms": 41381,
+          "output": "Debug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-baseline/cursor-agent-logs-501/session-2026-09-16T17-45-36-933Z-96495-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 2)...\nRetry attempt 2...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 3)...\nRetry attempt 3...\nRetriableError: WritableIterable is closed\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "Reply with the single word OK."
+          ],
+          "exit": 1,
+          "ms": 36787,
+          "output": "Debug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-baseline/cursor-agent-logs-501/session-2026-09-16T17-46-18-295Z-2216-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 2)...\nRetry attempt 2...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 3)...\nRetry attempt 3...\nRetriableError: WritableIterable is closed\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "Reply with the single word OK."
+          ],
+          "exit": 0,
+          "ms": 37934,
+          "output": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"duration_ms\":28193,\"duration_api_ms\":28193,\"result\":\"OKOK\",\"session_id\":\"10b758f1-850b-4d2c-bb95-3a0928cb6138\",\"request_id\":\"b858a885-82d0-4d62-891a-b340837f3735\",\"usage\":{\"inputTokens\":99,\"outputTokens\":23,\"cacheReadTokens\":22848,\"cacheWriteTokens\":0}}\nDebug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-baseline/cursor-agent-logs-501/session-2026-09-16T17-46-55-065Z-6784-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "--plugin-dir",
+            "<run>/cursor-clone/plugins/atoi",
+            "Reply with the single word OK."
+          ],
+          "exit": 1,
+          "ms": 53038,
+          "output": "Debug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-plugin/cursor-agent-logs-501/session-2026-09-16T17-47-33-023Z-10971-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 2)...\nRetry attempt 2...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 3)...\nRetry attempt 3...\nRetriableError: WritableIterable is closed\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "--plugin-dir",
+            "<run>/cursor-clone/plugins/atoi",
+            "Reply with the single word OK."
+          ],
+          "exit": 1,
+          "ms": 44827,
+          "output": "Debug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-plugin/cursor-agent-logs-501/session-2026-09-16T17-48-26-193Z-17564-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 2)...\nRetry attempt 2...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 3)...\nRetry attempt 3...\nRetriableError: WritableIterable is closed\n"
+        },
+        {
+          "argv": [
+            "cursor-agent",
+            "-p",
+            "--trust",
+            "--mode",
+            "ask",
+            "--debug",
+            "--output-format",
+            "json",
+            "--plugin-dir",
+            "<run>/cursor-clone/plugins/atoi",
+            "Reply with the single word OK."
+          ],
+          "exit": 1,
+          "ms": 41567,
+          "output": "Debug server: http://127.0.0.1:43111 (log: <run>/cursor-tmp-plugin/cursor-agent-logs-501/session-2026-09-16T17-49-10-977Z-21785-1.log)\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 1)...\nRetry attempt 1...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 2)...\nRetry attempt 2...\nConnection lost, reconnecting to https://agentn.global.api5.cursor.sh (attempt 3)...\nRetry attempt 3...\nRetriableError: WritableIterable is closed\n"
+        }
+      ]
+    }
+  ],
+  "proofClass": "Client install and load of the plugin from a fresh clone, in isolated client homes (Claude Code, Codex) or a --plugin-dir session (Cursor). Not proven here: a live tools/list through the bridge, which needs a connected operator, and any hosted client (ChatGPT, Claude.ai)."
+}
