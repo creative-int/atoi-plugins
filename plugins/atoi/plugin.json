@@ -1,0 +1,46 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "atoi",
+  "version": "0.2.0",
+  "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
+  "author": {
+    "name": "creative-int",
+    "email": "support@creative-int.com",
+    "url": "https://atoi.app"
+  },
+  "homepage": "https://atoi.app",
+  "repository": "https://github.com/creative-int/atoi-plugins",
+  "license": "MIT",
+  "keywords": [
+    "atoi",
+    "mcp",
+    "agent-skills",
+    "projects",
+    "workspaces",
+    "tasks",
+    "threads"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Atoi",
+        "shortDescription": "Work in Atoi from the agent you are already in",
+        "longDescription": "Atoi brings its governed verbs into Codex: Projects and Workspaces, the Workspace Thread, Tasks with change sets and proof, search, Inbox decisions, Ideas, plans, automations, channels, skills, settings, usage, and a readiness check. Consequential actions raise the same approval card a person gets, and every action leaves a receipt you can read back in Atoi.",
+        "developerName": "creative-int",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://atoi.app",
+        "defaultPrompt": [
+          "What is waiting for me in my Atoi inbox?",
+          "Start a safe Atoi task that audits this project.",
+          "Review the change set on my latest Atoi task."
+        ],
+        "composerIcon": "./assets/logo.png",
+        "logo": "./assets/logo.png"
+      }
+    }
+  }
+}

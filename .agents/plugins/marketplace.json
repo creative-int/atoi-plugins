@@ -1,0 +1,20 @@
+{
+  "name": "atoi",
+  "interface": {
+    "displayName": "Atoi"
+  },
+  "plugins": [
+    {
+      "name": "atoi",
+      "source": {
+        "source": "local",
+        "path": "./plugins/atoi"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_USE"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

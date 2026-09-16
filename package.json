@@ -1,6 +1,6 @@
 {
   "name": "@creative-int/atoi-plugins",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "repoProfile": "agent-plugin-companion",
   "companionOf": "atoi",
@@ -8,18 +8,21 @@
     "repoProfile": "agent-plugin-companion",
     "companionOf": "atoi",
     "workspaceLint": {
-      "allowedRootEntries": ["atoi.config.ts"]
+      "allowedRootEntries": [
+        "atoi.config.ts",
+        "plugins"
+      ]
     }
   },
-  "description": "Portable Atoi skills and generated MCP wiring for Claude Code, Codex, Cursor, and other agent clients.",
+  "description": "Atoi's first-party agent plugin: an Agent Plugins 1.0.0 package with catalogs for Claude Code, Codex, and Cursor.",
   "keywords": [
     "atoi",
+    "agent-plugins",
     "agent-skills",
     "mcp",
-    "projects",
-    "workspaces",
-    "tasks",
-    "proof"
+    "claude-code",
+    "codex",
+    "cursor"
   ],
   "homepage": "https://atoi.app",
   "license": "MIT",
@@ -29,16 +32,14 @@
   },
   "type": "module",
   "files": [
-    ".claude-plugin",
-    ".codex-plugin",
-    ".cursor-plugin",
-    ".mcp.json",
-    "server.json",
+    "plugins",
     "atoi.config.ts",
+    ".claude-plugin/marketplace.json",
+    ".agents/plugins/marketplace.json",
+    ".cursor-plugin/marketplace.json",
+    "server.json",
     "LICENSE",
-    "README.md",
-    "assets/logo.png",
-    "skills"
+    "README.md"
   ],
   "scripts": {
     "generate": "node tooling/generate.ts",

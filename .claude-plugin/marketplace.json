@@ -2,14 +2,36 @@
   "name": "atoi",
   "owner": {
     "name": "creative-int",
-    "email": "support@creative-int.com"
+    "email": "support@creative-int.com",
+    "url": "https://atoi.app"
   },
+  "description": "Atoi's first-party agent plugins.",
   "plugins": [
     {
       "name": "atoi",
       "displayName": "Atoi",
-      "source": "./",
-      "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
+      "source": "./plugins/atoi",
+      "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
+      "version": "0.2.0",
+      "author": {
+        "name": "creative-int",
+        "email": "support@creative-int.com",
+        "url": "https://atoi.app"
+      },
+      "homepage": "https://atoi.app",
+      "repository": "https://github.com/creative-int/atoi-plugins",
+      "license": "MIT",
+      "keywords": [
+        "atoi",
+        "mcp",
+        "agent-skills",
+        "projects",
+        "workspaces",
+        "tasks",
+        "threads"
+      ],
+      "category": "productivity",
+      "mcpServers": "./mcp.json"
     }
   ]
 }

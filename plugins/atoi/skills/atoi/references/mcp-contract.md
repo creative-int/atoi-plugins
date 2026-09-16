@@ -13,10 +13,10 @@ loads the operator token from its local credential backend, and forwards MCP
 JSON-RPC over authenticated HTTP. The bridge accepts only stateless
 `application/json` responses and rejects sessionful or SSE responses.
 
-The default product endpoint represented by the companion config is
-`https://kindly-terrier-129.convex.site/mcp`. Clients should not connect to it
-directly or place bearer credentials in manifests. `ATOI_CONVEX_SITE_URL` or
-the CLI's product config may select another Atoi environment at runtime.
+`atoi mcp status` prints the endpoint the CLI resolved. Clients should not
+connect to it directly or place bearer credentials in manifests.
+`ATOI_CONVEX_SITE_URL` or the CLI's product config may select another Atoi
+environment at runtime.
 
 ## `atoi_projects`
 

@@ -1,32 +1,11 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.creative-int/atoi",
-  "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
-  "version": "0.1.0",
+  "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
+  "version": "0.2.0",
   "websiteUrl": "https://atoi.app",
   "repository": {
     "url": "https://github.com/creative-int/atoi-plugins",
     "source": "github"
-  },
-  "_meta": {
-    "app.atoi/companion": {
-      "repoProfile": "agent-plugin-companion",
-      "companionOf": "atoi",
-      "mcp": {
-        "name": "atoi",
-        "endpoint": "https://kindly-terrier-129.convex.site/mcp",
-        "auth": "token",
-        "notes": "Clients connect through `atoi mcp serve`. `atoi account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
-      }
-    },
-    "app.atoi/cli-bridge": {
-      "command": "atoi",
-      "args": [
-        "mcp",
-        "serve"
-      ],
-      "transport": "stdio",
-      "authentication": "The installed Atoi CLI reads the operator token locally; plugin manifests contain no credential."
-    }
   }
 }

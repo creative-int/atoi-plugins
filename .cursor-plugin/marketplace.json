@@ -5,21 +5,31 @@
     "email": "support@creative-int.com"
   },
   "metadata": {
-    "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge.",
-    "repoProfile": "agent-plugin-companion",
-    "companionOf": "atoi",
-    "mcp": {
-      "name": "atoi",
-      "endpoint": "https://kindly-terrier-129.convex.site/mcp",
-      "auth": "token",
-      "notes": "Clients connect through `atoi mcp serve`. `atoi account login` obtains the operator token, stores it in the local credential backend, and the stdio bridge forwards it as a bearer without exposing it to plugin manifests."
-    }
+    "description": "Atoi's first-party agent plugins."
   },
   "plugins": [
     {
       "name": "atoi",
-      "source": ".",
-      "description": "Operate Atoi Projects, Workspaces, and governed Tasks through the authenticated MCP bridge."
+      "source": "./plugins/atoi",
+      "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
+      "version": "0.2.0",
+      "author": {
+        "name": "creative-int",
+        "email": "support@creative-int.com"
+      },
+      "homepage": "https://atoi.app",
+      "repository": "https://github.com/creative-int/atoi-plugins",
+      "license": "MIT",
+      "keywords": [
+        "atoi",
+        "mcp",
+        "agent-skills",
+        "projects",
+        "workspaces",
+        "tasks",
+        "threads"
+      ],
+      "logo": "plugins/atoi/assets/logo.png"
     }
   ]
 }
