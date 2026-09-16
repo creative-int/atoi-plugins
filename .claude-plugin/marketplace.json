@@ -12,7 +12,7 @@
       "displayName": "Atoi",
       "source": "./plugins/atoi",
       "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "creative-int",
         "email": "support@creative-int.com",
@@ -31,7 +31,71 @@
         "threads"
       ],
       "category": "productivity",
-      "mcpServers": "./mcp.json"
+      "mcpServers": "./mcp.json",
+      "metadata": {
+        "tools": [
+          {
+            "name": "atoi_projects",
+            "description": "List, get, create, update, archive, or restore governed Atoi Projects. A list answers one Workspace: workspace_id, or your Personal Workspace when none is given."
+          },
+          {
+            "name": "atoi_workspace",
+            "description": "Create or list your Atoi Workspaces, or show and bind the stable source associated with an Atoi Project."
+          },
+          {
+            "name": "atoi_tasks",
+            "description": "List, get, start, cancel, continue, inspect, apply, or publish authoritative Atoi Task change sets. Poll get for wait semantics."
+          },
+          {
+            "name": "atoi_threads",
+            "description": "Drive a workspace Thread the way the app does: resolve a workspace to its one Thread, list, inspect pending decisions, send, reply, steer, attach a file to the turn that carries it, retry, stop, react, approve or deny, launch a Task, pin, unpin, or read where the wait after each send went, through the authenticated operator surface."
+          },
+          {
+            "name": "atoi_search",
+            "description": "Search accessible Atoi threads, messages, projects, Tasks, files, and outputs."
+          },
+          {
+            "name": "atoi_inbox",
+            "description": "List Inbox cards and answer each in its own words: keep, edit, or dismiss a memory card; approve or deny an approval; snooze any card."
+          },
+          {
+            "name": "atoi_ideas",
+            "description": "Read the Ideas the agent wrote for this account, refresh them, answer the current ask, or dismiss a connection suggestion."
+          },
+          {
+            "name": "atoi_usage",
+            "description": "Read what this person's turns cost: today, the last days, and the models that spent it, from the model-decision receipts."
+          },
+          {
+            "name": "atoi_plan",
+            "description": "List the plans in one Workspace or Project with their ids, titles, status and progress, or retire or restore one of the person's plans."
+          },
+          {
+            "name": "atoi_automations",
+            "description": "List, inspect, create, update, toggle, trigger, or remove Atoi Automations with schedule and receipt readback."
+          },
+          {
+            "name": "atoi_channels",
+            "description": "List and inspect user-owned Atoi Channels, open browser-native connection flows, revoke links, or send a receipt-backed test."
+          },
+          {
+            "name": "atoi_skills",
+            "description": "List, inspect, enable, disable, or remove user-owned Atoi Skills with durable skill receipts."
+          },
+          {
+            "name": "atoi_plugins",
+            "description": "List, inspect, install, enable, disable, or remove the pinned first-party Atoi plugin release with durable plugin receipts."
+          },
+          {
+            "name": "atoi_settings",
+            "description": "Read canonical settings and connector state from the settings registry, set any writable non-secret setting by key, return one setting to the default it came from, or connect and disconnect browser-owned Atoi connections."
+          },
+          {
+            "name": "atoi_doctor",
+            "description": "Return the canonical Atoi runtime readiness ledger and compact receipt without promoting unobserved checks to ready."
+          }
+        ]
+      }
     }
   ]
 }

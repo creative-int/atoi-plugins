@@ -1,0 +1,10 @@
+{
+  "file": "tooling/reference/mcp-reference.json",
+  "repository": "creative-int/atoi",
+  "path": "apps/docs/src/generated/mcp-reference.json",
+  "lastChangedCommit": "fda0b6635a1a394319446cca755585c681e1b014",
+  "readAtCommit": "273c13762c5b8291a0ea8398be802c071e98db1e",
+  "readAt": "2026-09-16T17:11:01Z",
+  "registryCheck": "tool names and order equal ATOI_MCP_OPERATOR_TOOLS in packages/backend/convex/mcp.ts at readAtCommit (15 tools)",
+  "refresh": "copy the file from the product at a named commit, update this record, run pnpm generate, bump plugin.version"
+}

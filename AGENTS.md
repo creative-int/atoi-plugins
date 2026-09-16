@@ -43,7 +43,14 @@ git add <intentional-files>
 git commit -m "feat: ..."
 ```
 
-Run `pnpm verify` before every commit.
+Run `pnpm verify` before every commit. After pushing a change to `plugins/` or a
+catalog, run `pnpm proof:install --source creative-int/atoi-plugins --record`
+and commit the receipt: a client install path is claimed only with a receipt.
+
+When the product's MCP registry changes, copy
+`apps/docs/src/generated/mcp-reference.json` from the Atoi repo at a named
+commit into `tooling/reference/`, update `SOURCE.json`, regenerate, and bump
+the version.
 
 ## Boundaries
 

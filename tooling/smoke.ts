@@ -80,7 +80,10 @@ checks.push("mcp.json declares only the credential-free stdio bridge `atoi mcp s
 for (const legacy of [".claude-plugin", ".codex-plugin", ".cursor-plugin", ".mcp.json"]) {
   assert.throws(() => lstatSync(join(pluginRoot, legacy)), `${plugin.dir}/${legacy} must not exist`);
 }
-checks.push("the plugin directory carries no client-specific manifest");
+for (const retired of [".claude-plugin/plugin.json", ".codex-plugin", ".cursor-plugin/plugin.json", ".mcp.json", "skills"]) {
+  assert.throws(() => lstatSync(join(root, retired)), `${retired} was retired from the repository root`);
+}
+checks.push("neither the plugin directory nor the repository root carries a client-specific manifest");
 
 const claude = readJson(join(root, ".claude-plugin/marketplace.json"));
 assert.equal(claude.name, marketplace.name);
@@ -131,6 +134,37 @@ for (const skill of skills) {
 }
 checks.push(`${skills.length} skill(s) name themselves and link only files inside the skill`);
 
+const reference = readJson(join(root, "tooling/reference/mcp-reference.json"));
+const toolNames: string[] = reference.tools.map((tool: Json) => tool.name);
+assert.equal(new Set(toolNames).size, toolNames.length, "the reference names each tool once");
+assert.deepEqual(
+  claudeEntry.metadata?.tools?.map((tool: Json) => tool.name),
+  toolNames,
+  "the Claude Code catalog lists the reference's tools in order",
+);
+const prose = [
+  join(pluginRoot, "skills/atoi/SKILL.md"),
+  join(pluginRoot, "skills/atoi/references/work-and-proof.md"),
+  join(root, "README.md"),
+];
+for (const path of prose) {
+  const named = new Set(readFileSync(path, "utf8").match(/\batoi_[a-z]+(?:_[a-z]+)*\b/g) ?? []);
+  for (const name of named) {
+    assert(toolNames.includes(name), `${relative(root, path)} names ${name}, which Atoi does not ship`);
+  }
+}
+const skillBody = readFileSync(join(pluginRoot, "skills/atoi/SKILL.md"), "utf8");
+for (const name of toolNames) {
+  assert(skillBody.includes(`\`${name}\``), `the skill never names ${name}`);
+}
+const toolsDoc = readFileSync(join(pluginRoot, "skills/atoi/references/tools.md"), "utf8");
+assert.deepEqual(
+  [...toolsDoc.matchAll(/^## `(atoi_[a-z_]+)`$/gm)].map((match) => match[1]),
+  toolNames,
+  "references/tools.md documents every tool in reference order",
+);
+checks.push(`the skill, its references, the README and the Claude catalog name exactly the ${toolNames.length} tools the reference ships`);
+
 const shipped = [...walk(pluginRoot), join(root, "README.md")].filter((path) => !path.endsWith(".png"));
 for (const path of shipped) {
   const text = readFileSync(path, "utf8");
@@ -151,7 +185,7 @@ console.log(
       skills,
       checks,
       limits: [
-        "a client loading the package is proven by tooling/install-proof.mjs, not here",
+        "a client loading the package is proven by tooling/install-proof.ts, not here",
         "a live tools/list against Atoi needs an operator login and is not run here",
       ],
     },

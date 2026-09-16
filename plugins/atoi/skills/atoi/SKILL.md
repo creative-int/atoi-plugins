@@ -1,160 +1,150 @@
 ---
 name: atoi
-description: "This skill should be used when an agent needs to operate Atoi through its authenticated MCP bridge, including listing or managing Projects, binding Workspace source truth, starting or following governed Tasks, or reviewing Task proof. Triggers include 'use Atoi', 'open this in Atoi', 'run an Atoi task', 'check the workspace', and 'review the proof'."
+description: "Operate Atoi from this agent with the person's own authority: their Workspaces and Projects, the one Thread per Workspace (send, reply, steer, approve), governed Tasks with change sets, checks and proof, search, Inbox decisions, Ideas, plans, automations, channels, skills, settings, usage and readiness. Use when the person asks to do something in Atoi, to check what is waiting for them in Atoi, to run or review an Atoi task, or to read back what an agent did there."
 ---
 
 # Atoi
 
-Operate Atoi through the installed product CLI's credential-safe MCP bridge.
-Atoi remains the authority for Projects, stable Workspaces, governed Tasks,
-change sets, checks, and proof.
+Atoi is where the person's projects, conversations and governed work live.
+Through this plugin you act in Atoi with exactly the authority of their own
+account. Nothing you do is hidden from them: every action leaves a receipt they
+can read back in the app.
 
-## Use When
+## First, check you have hands
 
-- The user asks to create, inspect, update, archive, or restore an Atoi Project.
-- A Project needs a stable repository, branch, or local-directory binding.
-- Work should run as a durable Atoi Task with explicit result and proof.
-- An existing Task needs status, continuation, cancellation, or change review.
-- The user wants a confirmed local apply or proof-backed draft pull request.
-
-Do not use this skill for ordinary file edits that do not need Atoi state, or
-for direct access to Atoi's remote bearer endpoint.
-
-## Authenticate and Connect
-
-The plugin never contains an Atoi credential. The product CLI owns the
-operator token and bridges local stdio to Atoi's authenticated HTTP MCP
-endpoint.
+The `atoi_*` tools come from the local bridge `atoi mcp serve`, which the
+person's installed Atoi CLI runs. If the tools are missing, or a call fails
+with a login or transport error, check from a shell:
 
 ```sh
-atoi account login
 atoi account status --json
 atoi mcp status --probe --json
 ```
 
-Clients start the bridge with:
+- Disconnected, or `login-required`: ask the person to run
+  `atoi account login`, which opens browser device authorization. Do not
+  suggest `atoi login`; that pairs a Computer and gives you no tools.
+- Never ask for, print, copy or store the operator token.
+- Once connected, `atoi_doctor` with `{"action": "status"}` returns Atoi's
+  readiness ledger.
 
-```sh
-atoi mcp serve
-```
+## The model
 
-`atoi account login` uses browser device authorization unless an operator
-explicitly supplies `--token`. The resulting operator token stays in the
-CLI's local credential backend. Never request, print, copy, or place that token
-in plugin configuration.
+- A **Workspace** is a place the person belongs to. Their **Personal**
+  Workspace is used when you pass no `workspace_id`.
+- Each Workspace has one **Thread**: the conversation with Atoi's agent.
+- A **Project** holds durable intent and, for code work, one stable source
+  binding: repository, branch, optional directory.
+- A **Task** is governed work in a Project. Its outcome is four separate
+  things: **Result**, **Changes** (one authoritative change set with an id and
+  a fingerprint), **Checks**, and **Proof** (receipts).
 
-## Core MCP Tools
+## The tools
 
-- `atoi_projects` manages governed Projects with `list`, `get`, `create`,
-  `update`, `archive`, and `restore`.
-- `atoi_workspace` manages a Project's stable Workspace with `show`, `bind`,
-  `status`, `report`, and `changes`.
-- `atoi_tasks` manages durable Tasks with `list`, `get`, `start`, `cancel`,
-  `continue`, `changes`, `apply`, and `draft-pr`.
+<!-- AUTO-GENERATED:TOOLS START -->
 
-Prefer these tools when they are mounted. Use the public `atoi` CLI when shell
-access is needed for local Git inspection or local application.
+| Tool | Actions |
+| --- | --- |
+| `atoi_projects` | `list` `get` `create` `update` `archive` `restore` |
+| `atoi_workspace` | `create` `update` `list` `show` `bind` `status` `report` `changes` |
+| `atoi_tasks` | `list` `get` `start` `cancel` `continue` `changes` `apply` `draft-pr` |
+| `atoi_threads` | `list` `get` `resolve` `send` `reply` `steer` `attach` `retry` `stop` `react` `approve` `deny` `launch` `pin` `unpin` `timings` |
+| `atoi_search` | search by `query` |
+| `atoi_inbox` | `list` `keep` `edit` `dismiss` `approve` `deny` `snooze` |
+| `atoi_ideas` | `list` `refresh` `answer` `dismiss` |
+| `atoi_usage` | `get` |
+| `atoi_plan` | `list` `archive` `restore` |
+| `atoi_automations` | `list` `get` `create` `update` `toggle` `trigger` `remove` |
+| `atoi_channels` | `list` `get` `authorize` `revoke` `test` |
+| `atoi_skills` | `list` `get` `enable` `disable` `remove` |
+| `atoi_plugins` | `list` `get` `install` `enable` `disable` `remove` |
+| `atoi_settings` | `get` `set` `unset` `authorize` `disconnect` |
+| `atoi_doctor` | `status` |
 
-## Workflow
+<!-- AUTO-GENERATED:TOOLS END -->
 
-### 1. Resolve the Project
+Every argument, requirement and example is in
+[references/tools.md](references/tools.md), generated from the reference Atoi
+ships. Read a tool's entry there before you call it for the first time.
 
-Call `atoi_projects` with `action: "list"` before creating anything. Reuse a
-matching Project. If none exists, call `action: "create"` with `name`,
-`repo_url`, `repo_branch`, and a `default_task_profile` of `safe` or
-`workspace-write`.
+## How to work
 
-Capture the returned Project ID.
+### Read before you write
 
-### 2. Establish Workspace Truth
+Start from reads: `atoi_inbox` `list`, `atoi_search`, `atoi_threads` `get`,
+`atoi_tasks` `get`. Take ids from what a read returns; never construct one.
 
-Call `atoi_workspace` with:
+### Talk to a Workspace's Thread
 
-```json
-{
-  "action": "show",
-  "project_id": "<project-id>"
-}
-```
+1. `atoi_threads` `resolve` with the `workspace_id` you want, or none for
+   Personal. It returns the Thread and opens it if it did not exist yet.
+2. `send` with a `prompt` and a `delivery_id` you keep. Reuse that same
+   `delivery_id` if you retry, so a retry never posts twice.
+3. Read the answer with `get`. `timings` shows where the wait after a send
+   went. `steer` redirects a reply in flight; `stop` ends it.
+4. When the Thread raises an ask, put the decision in front of the person.
+   Call `approve` or `deny` with its `request_id` and `confirmation: true` only
+   after they have chosen.
 
-Use `bind` only when the repository, branch, or directory is absent or wrong.
-Use `report` to record an observed revision, dirty state, ahead/behind counts,
-sync state, and preview state. A remote MCP client cannot inspect a local Git
-checkout automatically; use `atoi workspace status --project <id> --json`
-from the intended checkout for that proof.
+### Run governed work
 
-### 3. Start and Follow a Task
+1. `atoi_projects` `list`. Reuse a matching Project; `create` one only when
+   none matches.
+2. `atoi_workspace` `show` with the `project_id` to see the source binding.
+   `bind` only when it is missing or wrong.
+3. `atoi_tasks` `start` with the `project_id`, a `prompt` that names the
+   outcome and the proof you expect, and a `safety_profile`: `safe` for reading
+   and auditing, `workspace-write` only when changes are intended.
+4. Poll `get` at a modest interval. If the Task asks a question, put it to the
+   person and answer with `continue` on the same Task. Do not start a
+   replacement.
+5. Read `changes`, then report Result, Changes, Checks and Proof separately.
 
-Call `atoi_tasks` with:
+### Cross a mutation boundary on purpose
 
-```json
-{
-  "action": "start",
-  "project_id": "<project-id>",
-  "prompt": "Implement the requested outcome and report Result, Changes, Checks, and Proof.",
-  "safety_profile": "workspace-write"
-}
-```
+- A request to review is not a request to apply. Show the person the
+  change-set id, fingerprint, files and checks, and wait for their choice.
+- `apply` and `draft-pr` take the `change_set_id`, the
+  `change_set_fingerprint`, `confirmation: true`, and an `idempotency_key` you
+  keep for retries. The terminal uses `apply:<fingerprint>` and
+  `draft-pr:<fingerprint>`; use the same keys.
+- An MCP `apply` records the governed action but cannot change files in the
+  person's checkout. For the local write, run the terminal from that checkout
+  and report its `localApply`:
 
-Use `safe` for read-only work. Capture the Task ID, then poll `get` at a modest
-interval. If the Task asks for clarification, surface the question. Continue
-the same Task with `action: "continue"` and a refined prompt instead of
-silently replacing it.
+  ```sh
+  atoi task apply <task-id> --confirm \
+    --expected-change-set-id <id> \
+    --expected-change-set-fingerprint <fingerprint> --json
+  ```
 
-### 4. Review Result and Proof
+- A draft pull request exists only when the result carries its URL.
 
-Read `get` and `changes`. Keep these outcomes separate:
+### Approvals Atoi raises for its own agent
 
-- Result: what the Task accomplished.
-- Changes: the authoritative change-set ID, fingerprint, files, and operations.
-- Checks: verification and blockers.
-- Proof: durable receipts for the result and any action.
+When Atoi's agent reaches a floor verb (spending, sending outside Atoi,
+deleting, publishing, force pushing), it raises an approval card instead of
+acting, in every governance mode. Those cards reach you through `atoi_inbox`
+and as asks on the Thread. Do not answer one on the person's behalf.
 
-A prepared change set is not applied work. A prepared draft-PR action is not a
-published pull request.
+### Report ids, not adjectives
 
-### 5. Cross a Mutation Boundary Deliberately
+Report the Workspace, Project, Thread and Task ids; the change-set id and
+fingerprint; the action id and idempotency key; the applied revision or the
+pull-request URL; and the proof receipt ids. Keep every state that is not final
+exactly as Atoi reports it: a `queued`, `running` or `paused` run, a `prepared`
+action, a `partial` or `unverified` proof, an `unknown` source state. None of
+them means done.
 
-Before `apply` or `draft-pr`, present the exact change-set ID, fingerprint,
-files, checks, and proof. Require explicit confirmation and a stable
-idempotency key.
+## The terminal twin
 
-Use the CLI for actual local file application:
+Each tool has a terminal equivalent, `atoi <topic> <verb> --json`, with topics
+such as `workspace`, `project`, `task`, `thread`, `search`, `inbox`, `ideas`,
+`plan`, `automation`, `channel`, `skill`, `plugin`, `settings`, `usage` and
+`doctor` (`atoi help` lists them all). Read values from `data`, never from
+`meta.cwd`. The terminal remembers a Workspace between calls
+(`atoi workspace use <id>`); tool calls name `workspace_id` instead.
 
-```sh
-atoi task apply <task-id> \
-  --confirm \
-  --expected-change-set-id <change-set-id> \
-  --expected-change-set-fingerprint <fingerprint> \
-  --directory /absolute/repository/path \
-  --json
-```
-
-Call a draft pull request published only when Atoi returns a pull-request URL
-or an explicit published state.
-
-## Example Flows
-
-- Inspect: `atoi_projects list` → `atoi_workspace show` →
-  `atoi_tasks list|get`.
-- New governed work: Project `list|create` → Workspace `show|bind|report` →
-  Task `start|get|continue` → `changes`.
-- Apply: Task `get|changes` → local Workspace status → explicit confirmation →
-  CLI `task apply` → Task and Workspace readback.
-- Draft PR: Task `get|changes` → explicit confirmation →
-  `atoi_tasks draft-pr` → verify returned URL and proof receipt.
-
-## Guardrails
-
-- Never expose the operator token or connect a plugin directly to the remote
-  bearer endpoint.
-- Never invent a second Project, Workspace, Task, or proof schema.
-- Never turn inspection into confirmation.
-- Never overwrite unrelated dirty files.
-- Never claim local application from an MCP preparation alone.
-- Preserve pending, blocked, needs-review, and unknown states exactly.
-
-## Reference
-
-Read [references/mcp-contract.md](references/mcp-contract.md) for the exact v1
-tool actions, authentication boundary, and proof semantics.
+Read [references/work-and-proof.md](references/work-and-proof.md) for Task
+states, change-set protection, idempotency, failure handling and a handoff
+template.

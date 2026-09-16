@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.creative-int/atoi",
   "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "websiteUrl": "https://atoi.app",
   "repository": {
     "url": "https://github.com/creative-int/atoi-plugins",

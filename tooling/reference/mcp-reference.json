@@ -1,0 +1,1512 @@
+{
+  "generatedFrom": [
+    "packages/backend/convex/mcp.ts",
+    "packages/contracts/atoi-app-control.ts"
+  ],
+  "tools": [
+    {
+      "arguments": [
+        {
+          "description": "Choose the Project operation to run. Allowed values: list, get, create, update, archive, restore.",
+          "enum": ["list", "get", "create", "update", "archive", "restore"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Project by id. Required when action is get, update, archive, or restore.",
+          "name": "project_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "List the Projects of one Workspace; without it, your Personal Workspace.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the Project name. Required when action is create.",
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the Project description.",
+          "name": "description",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the instructions applied to work in the Project.",
+          "name": "instructions",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose whether the Project is for chat or code work. Allowed values: chat, code.",
+          "enum": ["chat", "code"],
+          "name": "kind",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the source repository URL.",
+          "name": "repo_url",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the source repository branch.",
+          "name": "repo_branch",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the directory path inside the source repository.",
+          "name": "directory_path",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Include archived Projects in list results.",
+          "name": "include_archived",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Choose the default safety profile for new Tasks. Allowed values: safe, workspace-write.",
+          "enum": ["safe", "workspace-write"],
+          "name": "default_task_profile",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential Project action. Required when action is archive.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is create, update, archive, or restore.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_projects",
+          "arguments": {
+            "action": "get",
+            "project_id": "prj_8k2v"
+          }
+        },
+        "response": {
+          "project": {
+            "id": "prj_8k2v",
+            "name": "Atlas notes"
+          },
+          "source": {
+            "binding": null
+          }
+        }
+      },
+      "name": "atoi_projects",
+      "notes": [
+        "When action is update, provide at least one of name, description, instructions, or default_task_profile.",
+        "When action is create and directory_path is provided, also provide repo_url.",
+        "When action is create and repo_branch is provided, also provide repo_url.",
+        "When action is create and repo_url is provided, also provide repo_branch."
+      ],
+      "result": "Returns a Project list or a Project, source, and receipt projection as JSON text content.",
+      "summary": "List, get, create, update, archive, or restore governed Atoi Projects. A list answers one Workspace: workspace_id, or your Personal Workspace when none is given."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Workspace or source operation to run. Allowed values: create, update, list, show, bind, status, report, changes.",
+          "enum": [
+            "create",
+            "update",
+            "list",
+            "show",
+            "bind",
+            "status",
+            "report",
+            "changes"
+          ],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Name the Workspace to create, or rename it. Required when action is create.",
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Describe what the Workspace is for.",
+          "name": "description",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Mark the Workspace with an emoji.",
+          "name": "emoji",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Mark the Workspace with one of the ten colors, or color an icon.",
+          "name": "color",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Mark the Workspace with an icon on a color.",
+          "name": "icon",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Return the Workspace to its letter mark.",
+          "name": "clear_mark",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Select the Workspace to update. Required when action is update.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the Project by id. Required when action is show, bind, status, report, or changes.",
+          "name": "project_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the source repository URL. Required when action is bind.",
+          "name": "repo_url",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the source repository branch. Required when action is bind.",
+          "name": "repo_branch",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the local directory that supplies source status.",
+          "name": "directory_path",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the Task whose change set you want to read.",
+          "name": "task_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Report the source revision used as the comparison base.",
+          "name": "base_revision",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Report the current source revision.",
+          "name": "current_revision",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Report whether the source has uncommitted changes.",
+          "name": "dirty",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Report how many commits the source is ahead.",
+          "name": "ahead",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Report how many commits the source is behind.",
+          "name": "behind",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Report the source synchronization state. Allowed values: unknown, in-sync, ahead, behind, diverged.",
+          "enum": ["unknown", "in-sync", "ahead", "behind", "diverged"],
+          "name": "sync_state",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Report whether a preview is ready. Allowed values: unknown, ready, unavailable.",
+          "enum": ["unknown", "ready", "unavailable"],
+          "name": "preview_status",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the URL for the ready preview.",
+          "name": "preview_url",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Identify the surface that supplied the source status. Allowed values: connected-host, cloud, operator.",
+          "enum": ["connected-host", "cloud", "operator"],
+          "name": "supplied_by",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the source observation time as a Unix timestamp in milliseconds.",
+          "name": "observed_at",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is bind.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_workspace",
+          "arguments": {
+            "action": "show",
+            "project_id": "prj_8k2v"
+          }
+        },
+        "response": {
+          "project": {
+            "id": "prj_8k2v",
+            "name": "Atlas notes"
+          },
+          "source": {
+            "projectId": "prj_8k2v",
+            "binding": null
+          }
+        }
+      },
+      "name": "atoi_workspace",
+      "result": "Returns Project source binding, source state, change sets, and mutation receipts as JSON text content.",
+      "summary": "Create or list your Atoi Workspaces, or show and bind the stable source associated with an Atoi Project."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Task operation to run. Allowed values: list, get, start, cancel, continue, changes, apply, draft-pr.",
+          "enum": [
+            "list",
+            "get",
+            "start",
+            "cancel",
+            "continue",
+            "changes",
+            "apply",
+            "draft-pr"
+          ],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Task by id.",
+          "name": "task_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the Project that owns the Task.",
+          "name": "project_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Describe the work to start or continue.",
+          "name": "prompt",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Provide an alternate brief when you start the Task.",
+          "name": "brief",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the Task title.",
+          "name": "title",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the model for the Task.",
+          "name": "model_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose how much workspace access the Task receives. Allowed values: safe, workspace-write.",
+          "enum": ["safe", "workspace-write"],
+          "name": "safety_profile",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit the number of Tasks returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Confirm the consequential Task action.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the change set to apply.",
+          "name": "change_set_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Provide the verified change set fingerprint.",
+          "name": "change_set_fingerprint",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Record the source revision produced by the applied change set.",
+          "name": "applied_revision",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the branch used for the draft pull request.",
+          "name": "head_branch",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the draft pull request title.",
+          "name": "pull_request_title",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the draft pull request body.",
+          "name": "pull_request_body",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_tasks",
+          "arguments": {
+            "action": "start",
+            "project_id": "prj_8k2v",
+            "prompt": "Audit the release state and return evidence.",
+            "safety_profile": "safe"
+          }
+        },
+        "response": {
+          "task": {
+            "id": "tsk_3m9q",
+            "status": "queued"
+          }
+        }
+      },
+      "name": "atoi_tasks",
+      "result": "Returns Task state, change sets, placement requests, or action receipts as JSON text content.",
+      "summary": "List, get, start, cancel, continue, inspect, apply, or publish authoritative Atoi Task change sets. Poll get for wait semantics."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Thread operation to run. Allowed values: list, get, resolve, send, reply, steer, attach, retry, stop, react, approve, deny, launch, pin, unpin, timings.",
+          "enum": [
+            "list",
+            "get",
+            "resolve",
+            "send",
+            "reply",
+            "steer",
+            "attach",
+            "retry",
+            "stop",
+            "react",
+            "approve",
+            "deny",
+            "launch",
+            "pin",
+            "unpin",
+            "timings"
+          ],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Thread by id.",
+          "name": "thread_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the Workspace whose one Thread to act on, instead of a Thread id.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit list results to one Project.",
+          "name": "project_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Write the message to send to the Thread. Required when action is send, reply, steer, or launch.",
+          "name": "prompt",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Send files with this message. Reserve each one first with the attach action, put the bytes at the URL it returns, then name the keys here.",
+          "items": {
+            "description": "Describe one file this message carries.",
+            "fields": [
+              {
+                "description": "Name the key the attach action reserved for this file.",
+                "name": "storage_key",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "description": "Set the file name the conversation will show.",
+                "name": "name",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "description": "Set the file type. Images, text, PDF, and JSON are accepted.",
+                "name": "mime_type",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "description": "Set the file size in bytes. The limit is 25MB.",
+                "name": "size",
+                "required": true,
+                "type": "number"
+              }
+            ],
+            "name": "attachments[]",
+            "type": "object"
+          },
+          "name": "attachments",
+          "required": false,
+          "type": "array"
+        },
+        {
+          "description": "Answer one message in the Thread by id. Required when action is reply.",
+          "name": "reply_to_message_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the message to act on. Required when action is react.",
+          "name": "message_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the emoji to apply to the message. Required when action is react.",
+          "name": "emoji",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose whether the reaction is added, removed, or toggled. Allowed values: add, remove, toggle.",
+          "enum": ["add", "remove", "toggle"],
+          "name": "reaction",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the Ask to answer. Required when action is approve or deny.",
+          "name": "request_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Approve this kind of action from now on.",
+          "name": "always",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Confirm the consequential action after you read what it will do. Required when action is approve or deny.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Name the Task this Thread launches.",
+          "name": "title",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the safety profile the Task runs under. Allowed values: safe, workspace-write.",
+          "enum": ["safe", "workspace-write"],
+          "name": "safety_profile",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose where the Task runs. Allowed values: none, cloud, host.",
+          "enum": ["none", "cloud", "host"],
+          "name": "place",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Name the computer the Task runs on.",
+          "name": "computer_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Name the account identity this call must run as.",
+          "name": "required_identity",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Name the capability this call requires before it runs.",
+          "name": "required_capability",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the model for this message.",
+          "name": "model_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the reasoning strength for this message. Allowed values: default, none, minimal, low, medium, high, xhigh, max.",
+          "enum": [
+            "default",
+            "none",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "name": "reasoning_strength",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Attach structured context references to this message.",
+          "items": {
+            "description": "Describe one context reference.",
+            "fields": [
+              {
+                "description": "Choose the context reference kind. Allowed values: skill, project, file, folder, thread, task, command, branch, process, terminal, error.",
+                "enum": [
+                  "skill",
+                  "project",
+                  "file",
+                  "folder",
+                  "thread",
+                  "task",
+                  "command",
+                  "branch",
+                  "process",
+                  "terminal",
+                  "error"
+                ],
+                "name": "kind",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Provide the compatibility alias for the context reference kind. Allowed values: skill, project, file, folder, thread, task, command, branch, process, terminal, error.",
+                "enum": [
+                  "skill",
+                  "project",
+                  "file",
+                  "folder",
+                  "thread",
+                  "task",
+                  "command",
+                  "branch",
+                  "process",
+                  "terminal",
+                  "error"
+                ],
+                "name": "type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Set the context reference id.",
+                "name": "id",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Set the visible label for the context reference.",
+                "name": "label",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "description": "Set the context reference value.",
+                "name": "value",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Attach additional JSON metadata to the context reference.",
+                "name": "metadata",
+                "required": false,
+                "type": "object"
+              }
+            ],
+            "name": "context_refs[]",
+            "type": "object"
+          },
+          "name": "context_refs",
+          "required": false,
+          "type": "array"
+        },
+        {
+          "description": "Set the durable delivery identity for this message.",
+          "name": "delivery_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is react, pin, or unpin.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit the number of Threads or messages returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_threads",
+          "arguments": {
+            "action": "send",
+            "thread_id": "thr_9c4k",
+            "prompt": "Summarize the release blockers.",
+            "delivery_id": "msg_release_1"
+          }
+        },
+        "response": {
+          "thread": {
+            "id": "thr_9c4k"
+          },
+          "receipt": {
+            "status": "completed",
+            "messageId": "msg_2v7b"
+          }
+        }
+      },
+      "name": "atoi_threads",
+      "notes": [
+        "When action is get, send, reply, steer, attach, retry, stop, react, approve, deny, launch, pin, or unpin, provide at least one of thread_id or workspace_id.",
+        "When action is send, reply, or steer, provide at least one of delivery_id or idempotency_key."
+      ],
+      "result": "Returns Thread state, messages, and send or mutation receipts as JSON text content.",
+      "summary": "Drive a workspace Thread the way the app does: resolve a workspace to its one Thread, list, inspect pending decisions, send, reply, steer, attach a file to the turn that carries it, retry, stop, react, approve or deny, launch a Task, pin, unpin, or read where the wait after each send went, through the authenticated operator surface."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Enter the text to search for.",
+          "name": "query",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Limit search to one accessible record scope.",
+          "name": "scope",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit the number of matches returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_search",
+          "arguments": {
+            "query": "release evidence",
+            "limit": 10
+          }
+        },
+        "response": {
+          "query": "release evidence",
+          "results": []
+        }
+      },
+      "name": "atoi_search",
+      "result": "Returns the matched accessible records as JSON text content.",
+      "summary": "Search accessible Atoi threads, messages, projects, Tasks, files, and outputs."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Inbox operation: keep, edit, or dismiss a memory card; approve or deny an approval; snooze any card. Allowed values: list, keep, edit, dismiss, approve, deny, snooze.",
+          "enum": [
+            "list",
+            "keep",
+            "edit",
+            "dismiss",
+            "approve",
+            "deny",
+            "snooze"
+          ],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Inbox item by id.",
+          "name": "item_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the approval request by id.",
+          "name": "request_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the new words when action is edit on a memory card.",
+          "name": "text",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit list results to one Inbox status. Allowed values: unread, read, snoozed, resolved.",
+          "enum": ["unread", "read", "snoozed", "resolved"],
+          "name": "status",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the snooze deadline as a Unix timestamp in milliseconds.",
+          "name": "snoozed_until",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Confirm the consequential Inbox decision.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Limit the number of Inbox items returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_inbox",
+          "arguments": {
+            "action": "list",
+            "status": "unread",
+            "limit": 10
+          }
+        },
+        "response": {
+          "items": [
+            {
+              "id": "inb_4d6p",
+              "status": "unread",
+              "title": "Publish release notes"
+            }
+          ]
+        }
+      },
+      "name": "atoi_inbox",
+      "result": "Returns Inbox items or decision readback as JSON text content.",
+      "summary": "List Inbox cards and answer each in its own words: keep, edit, or dismiss a memory card; approve or deny an approval; snooze any card."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Ideas operation to run. Allowed values: list, refresh, answer, dismiss.",
+          "enum": ["list", "refresh", "answer", "dismiss"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the current ask by delivery id.",
+          "name": "delivery_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "The option id to choose for the ask.",
+          "name": "option_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "The connection suggestion to dismiss. Allowed values: github, slack, linear, google-workspace.",
+          "enum": ["github", "slack", "linear", "google-workspace"],
+          "name": "connection_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Read Ideas inside one Workspace by id. Personal when omitted.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_ideas",
+          "arguments": {
+            "action": "list"
+          }
+        },
+        "response": {
+          "ideas": {
+            "written": {
+              "writtenAt": 1788700000000
+            },
+            "current": null,
+            "sections": []
+          }
+        }
+      },
+      "name": "atoi_ideas",
+      "result": "Returns the Ideas sections, tiles, and current ask, or a refresh, answer, or dismiss receipt as JSON text content.",
+      "summary": "Read the Ideas the agent wrote for this account, refresh them, answer the current ask, or dismiss a connection suggestion."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Read the usage summary. Allowed values: get.",
+          "enum": ["get"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "How many days back to read. Seven when omitted.",
+          "name": "days",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Read from this time, as an ISO time or a millisecond timestamp. The answer names the range it read.",
+          "name": "from",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Read up to this time; now when omitted.",
+          "name": "to",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Read one Workspace by id. Personal when omitted.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_usage",
+          "arguments": {
+            "action": "get",
+            "days": 7
+          }
+        },
+        "response": {
+          "usage": {
+            "range": {
+              "days": 7
+            },
+            "today": {
+              "turns": 4,
+              "costMicrodollars": 1200000
+            },
+            "window": {
+              "turns": 31,
+              "costMicrodollars": 8400000
+            },
+            "days": [],
+            "models": []
+          }
+        }
+      },
+      "name": "atoi_usage",
+      "result": "Returns the usage summary for the scope read: today, the window, a row per day, and a row per model, as JSON text content.",
+      "summary": "Read what this person's turns cost: today, the last days, and the models that spent it, from the model-decision receipts."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the plan operation: list the plans, retire one, or bring one back. Allowed values: list, archive, restore.",
+          "enum": ["list", "archive", "restore"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the plan to retire or restore, by the id list returns.",
+          "name": "plan_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Read one Project instead of the whole Workspace.",
+          "name": "project_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Read or act inside one Workspace by id. Personal when omitted.",
+          "name": "workspace_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Include retired plans in the list.",
+          "name": "include_archived",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Limit the number of plans returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_plan",
+          "arguments": {
+            "action": "archive",
+            "plan_id": "pln_3k8d",
+            "workspace_id": "wsp_7m4c"
+          }
+        },
+        "response": {
+          "plan": {
+            "planId": "pln_3k8d",
+            "title": "Friday launch",
+            "status": "archived"
+          },
+          "receipt": {
+            "planId": "pln_3k8d",
+            "status": "archived"
+          }
+        }
+      },
+      "name": "atoi_plan",
+      "result": "Returns the plans in the scope read with their ids, status and progress, or the retired or restored plan with its receipt, as JSON text content.",
+      "summary": "List the plans in one Workspace or Project with their ids, titles, status and progress, or retire or restore one of the person's plans."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Automation operation to run. Allowed values: list, get, create, update, toggle, trigger, remove.",
+          "enum": [
+            "list",
+            "get",
+            "create",
+            "update",
+            "toggle",
+            "trigger",
+            "remove"
+          ],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Automation by id.",
+          "name": "automation_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Attach the Automation to a Project, or use null to clear it.",
+          "name": "project_id",
+          "required": false,
+          "type": "string | null"
+        },
+        {
+          "description": "Set the Automation name.",
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the Automation description.",
+          "name": "description",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the instructions the Automation runs.",
+          "name": "prompt",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the model for Automation runs.",
+          "name": "model_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Enable or disable the Automation.",
+          "name": "enabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Return only enabled Automations.",
+          "name": "enabled_only",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Provide the message used for this manual run.",
+          "name": "input_message",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential Automation action.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same identity when you retry a create or a trigger, so a retry does not make a second automation or run it twice.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Limit the number of Automations returned.",
+          "name": "limit",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "description": "Configure when the Automation runs.",
+          "fields": [
+            {
+              "description": "Choose the schedule type. A once schedule runs one time and then the Automation retires. Allowed values: manual, daily, interval, monthly, once.",
+              "enum": ["manual", "daily", "interval", "monthly", "once"],
+              "name": "type",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "Set the calendar date a once schedule runs on, as YYYY-MM-DD on the local clock of the time zone.",
+              "name": "date",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Set the scheduled hour on the local clock of the Automation time zone, never UTC.",
+              "name": "hour",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "description": "Set the scheduled minute on that same local clock.",
+              "name": "minute",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "description": "Older name for schedule.hour. The same local clock, never UTC.",
+              "name": "hourUTC",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "description": "Older name for schedule.minute. The same local clock.",
+              "name": "minuteUTC",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "description": "Set the interval length in hours.",
+              "name": "hours",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "description": "Set the weekdays when the Automation runs.",
+              "items": {
+                "description": "Provide one weekday as a number.",
+                "name": "daysOfWeek[]",
+                "type": "number"
+              },
+              "name": "daysOfWeek",
+              "required": false,
+              "type": "array"
+            },
+            {
+              "description": "Set the day of the month when the Automation runs.",
+              "name": "dayOfMonth",
+              "required": false,
+              "type": "number"
+            }
+          ],
+          "name": "schedule",
+          "required": false,
+          "type": "object"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_automations",
+          "arguments": {
+            "action": "trigger",
+            "automation_id": "aut_5k1m",
+            "input_message": "Check the candidate tag."
+          }
+        },
+        "response": {
+          "receipt": {
+            "automationId": "aut_5k1m",
+            "runId": "run_4q7c"
+          }
+        }
+      },
+      "name": "atoi_automations",
+      "result": "Returns Automation records, run receipts, or mutation readback as JSON text content.",
+      "summary": "List, inspect, create, update, toggle, trigger, or remove Atoi Automations with schedule and receipt readback."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Channel operation to run. Allowed values: list, get, authorize, revoke, test.",
+          "enum": ["list", "get", "authorize", "revoke", "test"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Channel by id.",
+          "name": "channel_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Select the connected Channel link by id. Required when action is test.",
+          "name": "link_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the Channel provider to connect. Allowed values: telegram, slack, push. Required when action is authorize.",
+          "enum": ["telegram", "slack", "push"],
+          "name": "channel_kind",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential Channel action. Required when action is revoke.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is revoke or test.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_channels",
+          "arguments": {
+            "action": "test",
+            "link_id": "lnk_8s3d",
+            "idempotency_key": "test_release_1"
+          }
+        },
+        "response": {
+          "status": "sent",
+          "receipt": {
+            "linkId": "lnk_8s3d",
+            "deliveryStatus": "sent"
+          }
+        }
+      },
+      "name": "atoi_channels",
+      "notes": [
+        "When action is get or revoke, provide at least one of channel_id or link_id."
+      ],
+      "result": "Returns Channel state, authorization data, delivery receipts, or revocation readback as JSON text content.",
+      "summary": "List and inspect user-owned Atoi Channels, open browser-native connection flows, revoke links, or send a receipt-backed test."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the Skill operation to run. Allowed values: list, get, enable, disable, remove.",
+          "enum": ["list", "get", "enable", "disable", "remove"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the Skill by id. Required when action is get, enable, disable, or remove.",
+          "name": "skill_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential Skill action. Required when action is remove.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is enable, disable, or remove.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_skills",
+          "arguments": {
+            "action": "get",
+            "skill_id": "skl_6h2n"
+          }
+        },
+        "response": {
+          "skill": {
+            "skillId": "skl_6h2n",
+            "name": "Release review",
+            "enabled": true
+          }
+        }
+      },
+      "name": "atoi_skills",
+      "result": "Returns Skill state and durable Skill receipts as JSON text content.",
+      "summary": "List, inspect, enable, disable, or remove user-owned Atoi Skills with durable skill receipts."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the plugin operation to run. Allowed values: list, get, install, enable, disable, remove.",
+          "enum": ["list", "get", "install", "enable", "disable", "remove"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the plugin by id.",
+          "name": "plugin_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential plugin action. Required when action is remove.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is install, enable, disable, or remove.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_plugins",
+          "arguments": {
+            "action": "get",
+            "plugin_id": "atoi"
+          }
+        },
+        "response": {
+          "plugin": {
+            "pluginId": "atoi",
+            "enabled": true
+          }
+        }
+      },
+      "name": "atoi_plugins",
+      "result": "Returns plugin state and durable plugin receipts as JSON text content.",
+      "summary": "List, inspect, install, enable, disable, or remove the pinned first-party Atoi plugin release with durable plugin receipts."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the settings operation to run. Allowed values: get, set, unset, authorize, disconnect.",
+          "enum": ["get", "set", "unset", "authorize", "disconnect"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Select the setting by key. Required when action is set or unset.",
+          "name": "key",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Set the value to write. Required when action is set.",
+          "name": "value",
+          "required": false,
+          "type": "unknown"
+        },
+        {
+          "description": "Limit settings to one client surface. Allowed values: web, ios, macos, tui, cli, all.",
+          "enum": ["web", "ios", "macos", "tui", "cli", "all"],
+          "name": "client",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Choose the connection to authorize or disconnect. Allowed values: openai, anthropic, google, openrouter, github, slack, linear, google-workspace. Required when action is authorize or disconnect.",
+          "enum": [
+            "openai",
+            "anthropic",
+            "google",
+            "openrouter",
+            "github",
+            "slack",
+            "linear",
+            "google-workspace"
+          ],
+          "name": "connection",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "description": "Confirm the consequential disconnect action. Required when action is disconnect.",
+          "name": "confirmation",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "description": "Reuse the same mutation identity when you retry this action. Required when action is set, unset, or disconnect.",
+          "name": "idempotency_key",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_settings",
+          "arguments": {
+            "action": "get"
+          }
+        },
+        "response": {
+          "connections": [
+            {
+              "id": "github",
+              "status": "connected"
+            }
+          ]
+        }
+      },
+      "name": "atoi_settings",
+      "result": "Returns account setting and connector state, authorization data, or disconnect readback as JSON text content.",
+      "summary": "Read canonical settings and connector state from the settings registry, set any writable non-secret setting by key, return one setting to the default it came from, or connect and disconnect browser-owned Atoi connections."
+    },
+    {
+      "arguments": [
+        {
+          "description": "Choose the readiness check to run. Allowed values: status.",
+          "enum": ["status"],
+          "name": "action",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "example": {
+        "call": {
+          "tool": "atoi_doctor",
+          "arguments": {
+            "action": "status"
+          }
+        },
+        "response": {
+          "status": "ok",
+          "checks": [
+            {
+              "id": "node",
+              "status": "ok"
+            }
+          ]
+        }
+      },
+      "name": "atoi_doctor",
+      "result": "Returns the canonical runtime readiness ledger and compact readiness receipt as JSON text content.",
+      "summary": "Return the canonical Atoi runtime readiness ledger and compact receipt without promoting unobserved checks to ready."
+    }
+  ],
+  "verifiedAt": "2026-08-29"
+}

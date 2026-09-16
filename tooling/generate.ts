@@ -8,7 +8,32 @@ import {
   AGENT_PLUGINS_PLUGIN_SCHEMA,
 } from "./agent-plugins.ts";
 
+type ReferenceArgument = {
+  name: string;
+  type: string;
+  required?: boolean;
+  enum?: string[];
+  description: string;
+};
+type ReferenceTool = {
+  name: string;
+  summary: string;
+  arguments: ReferenceArgument[];
+  notes?: string[];
+  example?: { call?: { arguments?: Record<string, unknown> } };
+  result?: string;
+};
+type Reference = { verifiedAt: string; tools: ReferenceTool[] };
+type Source = { path: string; lastChangedCommit: string; readAtCommit: string };
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const reference = JSON.parse(
+  readFileSync(join(root, "tooling/reference/mcp-reference.json"), "utf8"),
+) as Reference;
+const referenceSource = JSON.parse(
+  readFileSync(join(root, "tooling/reference/SOURCE.json"), "utf8"),
+) as Source;
+const skillDir = `${atoiConfig.plugin.dir}/skills/atoi`;
 const check = process.argv.includes("--check");
 const { marketplace, plugin, claudeCode, codex, mcp, cli } = atoiConfig;
 const source = `./${plugin.dir}`;
@@ -79,6 +104,12 @@ const claudeMarketplace = {
       keywords: plugin.keywords,
       category: claudeCode.category,
       mcpServers: "./mcp.json",
+      metadata: {
+        tools: reference.tools.map((tool) => ({
+          name: tool.name,
+          description: tool.summary,
+        })),
+      },
     },
   ],
 };
@@ -129,6 +160,65 @@ const serverManifest = {
   repository: { url: plugin.repository, source: "github" },
 };
 
+const actionsOf = (tool: ReferenceTool) =>
+  tool.arguments.find((argument) => argument.name === "action")?.enum ?? [];
+const cell = (text: string) => text.replaceAll("|", "\\|").replaceAll("\n", " ");
+const describe = (argument: ReferenceArgument) =>
+  argument.enum ? argument.description.replace(/ Allowed values: [^.]*\.$/, "") : argument.description;
+
+function toolsReference() {
+  const lines = [
+    "# Atoi MCP tools",
+    "",
+    `Generated from Atoi's shipped MCP reference (\`${referenceSource.path}\` at product commit \`${referenceSource.lastChangedCommit.slice(0, 12)}\`, reference verified ${reference.verifiedAt}). Do not edit by hand; see \`tooling/reference/SOURCE.json\`.`,
+    "",
+    "Every tool takes JSON arguments and returns JSON as text content. A tool with an `action` argument runs one operation per call.",
+  ];
+  for (const tool of reference.tools) {
+    const actions = actionsOf(tool);
+    lines.push("", `## \`${tool.name}\``, "", tool.summary);
+    if (actions.length > 0) {
+      lines.push("", `**Actions:** ${actions.map((action) => `\`${action}\``).join(", ")}`);
+    }
+    const rows = tool.arguments.filter((argument) => argument.name !== "action");
+    if (rows.length > 0) {
+      lines.push("", "| Argument | Type | Description |", "| --- | --- | --- |");
+      for (const argument of rows) {
+        const type = argument.enum ? argument.enum.join(", ") : argument.type;
+        const name = argument.required ? `\`${argument.name}\` (required)` : `\`${argument.name}\``;
+        lines.push(`| ${name} | ${cell(type)} | ${cell(describe(argument))} |`);
+      }
+    }
+    if (tool.notes?.length) {
+      lines.push("", ...tool.notes.map((note) => `- ${note}`));
+    }
+    if (tool.example?.call?.arguments) {
+      lines.push("", "Example:", "", "```json", JSON.stringify(tool.example.call.arguments), "```");
+    }
+    if (tool.result) lines.push("", /^Returns\b/.test(tool.result) ? tool.result : `Returns: ${tool.result}`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function toolsTable() {
+  return [
+    "| Tool | Actions |",
+    "| --- | --- |",
+    ...reference.tools.map((tool) => {
+      const actions = actionsOf(tool);
+      return `| \`${tool.name}\` | ${actions.length > 0 ? actions.map((action) => `\`${action}\``).join(" ") : "search by `query`"} |`;
+    }),
+  ].join("\n");
+}
+
+function readmeTools() {
+  return [
+    "| Tool | What it does |",
+    "| --- | --- |",
+    ...reference.tools.map((tool) => `| \`${tool.name}\` | ${cell(tool.summary)} |`),
+  ].join("\n");
+}
+
 const generatedFiles: Record<string, string> = {
   [`${plugin.dir}/plugin.json`]: json(portableManifest),
   [`${plugin.dir}/mcp.json`]: json(portableMcp),
@@ -136,6 +226,7 @@ const generatedFiles: Record<string, string> = {
   ".agents/plugins/marketplace.json": json(codexMarketplace),
   ".cursor-plugin/marketplace.json": json(cursorMarketplace),
   "server.json": json(serverManifest),
+  [`${skillDir}/references/tools.md`]: toolsReference(),
 };
 
 function fence(language: string, lines: string[]) {
@@ -154,7 +245,7 @@ function installBlock() {
       "atoi mcp status --probe",
     ]),
     "",
-    `\`atoi account login\` opens browser device authorization for your operator identity. It is not \`atoi login\`, which pairs a Computer. \`atoi mcp status --probe\` should report \`live\`. If you prefer a script, \`${cli.installScript}\` installs the same CLI.`,
+    `\`atoi account login\` opens browser device authorization for your operator identity. It is not \`atoi login\`, which pairs a Computer. \`atoi mcp status --probe\` then checks the whole path: your login, the endpoint, and the tools Atoi returns. If you prefer a script, \`${cli.installScript}\` installs the same CLI.`,
     "",
     "### 2. Install the plugin in your client",
     "",
@@ -191,9 +282,6 @@ function installBlock() {
   ].join("\n");
 }
 
-const start = "<!-- AUTO-GENERATED:INSTALL START -->";
-const end = "<!-- AUTO-GENERATED:INSTALL END -->";
-
 function read(path: string) {
   try {
     return readFileSync(path, "utf8");
@@ -208,13 +296,23 @@ function write(relativePath: string, content: string) {
   writeFileSync(path, content);
 }
 
-function generatedReadme(current: string) {
+function fill(current: string, marker: string, body: string, file: string) {
+  const start = `<!-- AUTO-GENERATED:${marker} START -->`;
+  const end = `<!-- AUTO-GENERATED:${marker} END -->`;
   const markers = new RegExp(`${start}[\\s\\S]*?${end}`);
   if (!markers.test(current)) {
-    throw new Error("README is missing the generated install block markers.");
+    throw new Error(`${file} is missing the ${marker} markers.`);
   }
-  return current.replace(markers, `${start}\n\n${installBlock()}\n\n${end}`);
+  return current.replace(markers, () => `${start}\n\n${body}\n\n${end}`);
 }
+
+const markedFiles: Record<string, Array<[string, string]>> = {
+  "README.md": [
+    ["INSTALL", installBlock()],
+    ["TOOLS", readmeTools()],
+  ],
+  [`${skillDir}/SKILL.md`]: [["TOOLS", toolsTable()]],
+};
 
 let stale = 0;
 for (const [relativePath, content] of Object.entries(generatedFiles)) {
@@ -224,13 +322,17 @@ for (const [relativePath, content] of Object.entries(generatedFiles)) {
   if (!check) write(relativePath, content);
 }
 
-const currentReadme = read(join(root, "README.md"));
-if (currentReadme === null) throw new Error("README.md is missing.");
-const nextReadme = generatedReadme(currentReadme);
-if (nextReadme !== currentReadme) {
+for (const [relativePath, blocks] of Object.entries(markedFiles)) {
+  const current = read(join(root, relativePath));
+  if (current === null) throw new Error(`${relativePath} is missing.`);
+  const next = blocks.reduce(
+    (text, [marker, body]) => fill(text, marker, body, relativePath),
+    current,
+  );
+  if (next === current) continue;
   stale += 1;
-  console.log(`${check ? "stale" : "wrote"}: README.md (install block)`);
-  if (!check) write("README.md", nextReadme);
+  console.log(`${check ? "stale" : "wrote"}: ${relativePath} (generated blocks)`);
+  if (!check) write(relativePath, next);
 }
 
 if (check && stale > 0) {

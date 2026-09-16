@@ -1,6 +1,6 @@
 {
   "name": "@creative-int/atoi-plugins",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "repoProfile": "agent-plugin-companion",
   "companionOf": "atoi",

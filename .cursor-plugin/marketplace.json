@@ -12,7 +12,7 @@
       "name": "atoi",
       "source": "./plugins/atoi",
       "description": "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "creative-int",
         "email": "support@creative-int.com"

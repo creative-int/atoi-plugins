@@ -65,7 +65,7 @@ export const atoiConfig: AtoiPluginsConfig = {
   plugin: {
     name: "atoi",
     dir: "plugins/atoi",
-    version: "0.2.0",
+    version: "0.3.0",
     displayName: "Atoi",
     description:
       "Work in Atoi from the agent you are already in: Projects, Workspaces, the Workspace Thread, governed Tasks with change sets and proof, search, Inbox decisions, and receipts for every action.",
