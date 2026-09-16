@@ -9,7 +9,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { homedir } from "node:os";
+import { availableParallelism, homedir, loadavg } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,7 +23,7 @@ type ClientResult = {
   status: Status;
   clientVersion: string | null;
   commit: string | null;
-  assertions: Array<{ claim: string; held: boolean; evidence: string }>;
+  assertions: Array<{ claim: string; held: boolean; observed: boolean; evidence: string }>;
   notes: string[];
   steps: Step[];
 };
@@ -41,6 +41,8 @@ type Package = {
 };
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const loadAtStart = loadavg();
+const roundLoad = (values: number[]) => values.map((value) => Math.round(value * 100) / 100);
 const pluginDirName = atoiConfig.plugin.dir;
 const argv = process.argv.slice(2);
 const flag = (name: string, fallback?: string) => {
@@ -131,13 +133,16 @@ function result(client: string): ClientResult {
   return { client, status: "inconclusive", clientVersion: null, commit: null, assertions: [], notes: [], steps: [] };
 }
 
-function assertClaim(out: ClientResult, claim: string, held: boolean, evidence: string) {
-  out.assertions.push({ claim, held, evidence: scrub(evidence).slice(0, 600) });
+function assertClaim(out: ClientResult, claim: string, held: boolean, evidence: string, observed = true) {
+  out.assertions.push({ claim, held: observed && held, observed, evidence: scrub(evidence).slice(0, 600) });
   return held;
 }
 
 function settle(out: ClientResult) {
-  out.status = out.assertions.length > 0 && out.assertions.every((a) => a.held) ? "proven" : "failed";
+  const contradicted = out.assertions.some((a) => a.observed && !a.held);
+  const unobserved = out.assertions.some((a) => !a.observed);
+  out.status =
+    out.assertions.length === 0 ? "inconclusive" : contradicted ? "failed" : unobserved ? "inconclusive" : "proven";
   return out;
 }
 
@@ -347,11 +352,15 @@ function proveCursor(): ClientResult {
     try {
       answer = String(JSON.parse(invoked.stdout).result ?? "");
     } catch {}
+    const observed = invoked.exit === 0 && answer.trim().length > 0;
     assertClaim(
       out,
       `Cursor delivers the \`${skill}\` skill's instructions when \`/${skill}\` is invoked`,
       answer.includes(marker),
-      `a marker appended to a copy of the cloned SKILL.md was ${marker}; the agent answered ${JSON.stringify(answer.slice(0, 120))}`,
+      observed
+        ? `a marker appended to a copy of the cloned SKILL.md was ${marker}; the agent answered ${JSON.stringify(answer.slice(0, 120))}`
+        : `unobserved: every attempt ended without an answer (last exit ${invoked.exit}), so the Cursor session never reached the question`,
+      observed,
     );
   }
   return settle(out);
@@ -404,6 +413,7 @@ const receipt = {
   pluginJsonSha256: proven?.pkg.manifestSha256 ?? null,
   mcpJsonSha256: proven?.pkg.mcpSha256 ?? null,
   operator: operatorState(),
+  load: { start: roundLoad(loadAtStart), end: roundLoad(loadavg()), cores: availableParallelism() },
   results,
   proofClass:
     "Client install and load of the plugin from a fresh clone, in isolated client homes (Claude Code, Codex) or a --plugin-dir session (Cursor). Not proven here: a live tools/list through the bridge, which needs a connected operator, and any hosted client (ChatGPT, Claude.ai).",
@@ -424,15 +434,16 @@ function writeIndex(proofsDir: string) {
     const entry = data.results.find((item: any) => item.client === client);
     if (!entry) return "not run";
     const passed = entry.assertions.filter((a: any) => a.held).length;
-    return `${entry.status} ${passed}/${entry.assertions.length} (${entry.clientVersion ?? "?"})`;
+    const unobserved = entry.assertions.filter((a: any) => a.observed === false).length;
+    return `${entry.status} ${passed}/${entry.assertions.length}${unobserved ? `, ${unobserved} unobserved` : ""} (${entry.clientVersion ?? "?"})`;
   };
   const index = [
     "# Install proofs",
     "",
     "Each row is one run of `pnpm proof:install`. It clones the repository fresh, installs `plugins/atoi` into each client, and records what the client itself reports: Claude Code and Codex in isolated homes (`CLAUDE_CONFIG_DIR`, `CODEX_HOME`), Cursor through `cursor-agent --plugin-dir`, its own debug log, and a random marker requested through each skill. The receipt beside each row lists every command, its exit code, and each claim with its evidence.",
     "",
-    "| Run (UTC) | Commit | Source | Claude Code | Codex | Cursor | Operator | Receipt |",
-    "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    "| Run (UTC) | Commit | Source | Claude Code | Codex | Cursor | Operator | Load (1m, start → end) | Receipt |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ...receipts.map(({ file, data }) =>
       [
         "",
@@ -443,6 +454,7 @@ function writeIndex(proofsDir: string) {
         cellFor(data, "codex"),
         cellFor(data, "cursor"),
         data.operator.connected ? "connected" : "disconnected",
+        data.load ? `${data.load.start[0]} → ${data.load.end[0]}` : "not recorded",
         `[json](${file})`,
         "",
       ].join(" | ").trim(),
@@ -473,4 +485,4 @@ console.log(
     2,
   ),
 );
-process.exitCode = results.some((r) => r.status === "failed") ? 1 : 0;
+process.exitCode = results.some((r) => r.status === "failed") ? 1 : results.some((r) => r.status === "inconclusive") ? 2 : 0;
