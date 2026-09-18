@@ -14,6 +14,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { atoiConfig } from "../atoi.config.ts";
+import { scrubCredentials, serializeProof } from "./scrub.ts";
 
 type Status = "proven" | "failed" | "inconclusive" | "skipped";
 type Step = { argv: string[]; exit: number | null; ms: number; output: string };
@@ -59,11 +60,10 @@ const isGitHubSlug = /^[\w.-]+\/[\w.-]+$/.test(source) && !existsSync(source);
 const cloneUrl = isGitHubSlug ? `https://github.com/${source}.git` : resolve(source);
 
 function scrub(text: string) {
-  return text
+  return scrubCredentials(text)
     .split(realpathSync(runDir)).join("<run>")
     .split(runDir).join("<run>")
     .split(homedir()).join("~")
-    .replace(/atoi_(service|host)_[A-Za-z0-9]{6,}/g, "atoi_$1_<redacted>")
     .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, (email) => (email === "support@creative-int.com" ? email : "<email>"));
 }
 
@@ -391,7 +391,7 @@ const provers: Record<string, () => ClientResult> = {
 
 const results = clients.map((client) => {
   const prove = provers[client];
-  if (!prove) throw new Error(`Unknown client ${client}`);
+  if (!prove) throw new Error(`Unknown client ${scrub(client)}`);
   let outcome: ClientResult;
   try {
     outcome = prove();
@@ -400,7 +400,7 @@ const results = clients.map((client) => {
     outcome.status = "failed";
     outcome.notes.push(`the proof itself threw: ${scrub(error instanceof Error ? error.message : String(error))}`);
   }
-  console.error(`${client}: ${outcome.status}`);
+  console.error(scrub(`${client}: ${outcome.status}`));
   return outcome;
 });
 
@@ -419,7 +419,8 @@ const receipt = {
     "Client install and load of the plugin from a fresh clone, in isolated client homes (Claude Code, Codex) or a --plugin-dir session (Cursor). Not proven here: a live tools/list through the bridge, which needs a connected operator, and any hosted client (ChatGPT, Claude.ai).",
 };
 const receiptPath = join(runDir, "receipt.json");
-writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
+const receiptJson = serializeProof(receipt, scrub);
+writeFileSync(receiptPath, receiptJson);
 
 function writeIndex(proofsDir: string) {
   const receipts = readdirSync(proofsDir)
@@ -441,6 +442,8 @@ function writeIndex(proofsDir: string) {
     "# Install proofs",
     "",
     "Each row is one run of `pnpm proof:install`. It clones the repository fresh, installs `plugins/atoi` into each client, and records what the client itself reports: Claude Code and Codex in isolated homes (`CLAUDE_CONFIG_DIR`, `CODEX_HOME`), Cursor through `cursor-agent --plugin-dir`, its own debug log, and a random marker requested through each skill. The receipt beside each row lists every command, its exit code, and each claim with its evidence.",
+    "",
+    "Receipt fields keep their existing shape. Before either receipt copy or this index is written, all strings and nested data are sanitized by `tooling/scrub.ts`: service, host, OAuth access, refresh and authorization-code credentials; Authorization, Cookie and Set-Cookie values; and code, code_verifier, refresh_token and access_token fields in JSON, forms and callback URLs. Redacted values use `<redacted>`. Sanitization precedes evidence truncation. Run the synthetic regression suite with `node --test --test-concurrency=1 tooling/scrub.test.ts`; it mocks commands and HTTP and writes no client state.",
     "",
     "| Run (UTC) | Commit | Source | Claude Code | Codex | Cursor | Operator | Load (1m, start → end) | Receipt |",
     "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
@@ -464,7 +467,7 @@ function writeIndex(proofsDir: string) {
     "Not proven by these runs: a live `tools/list` through the bridge, which needs a connected operator, and any hosted client (ChatGPT, Claude.ai).",
     "",
   ].join("\n");
-  writeFileSync(join(proofsDir, "README.md"), index);
+  writeFileSync(join(proofsDir, "README.md"), scrub(index));
 }
 
 const proofsDir = join(repoRoot, "docs/proofs/install");
@@ -473,16 +476,12 @@ if (argv.includes("--record")) {
   const stamp = receipt.timestamp.replace(/[:.]/g, "-");
   writeFileSync(
     join(proofsDir, `${stamp}-${(receipt.commit ?? "unknown").slice(0, 12)}.json`),
-    `${JSON.stringify(receipt, null, 2)}\n`,
+    receiptJson,
   );
   writeIndex(proofsDir);
 }
 
 console.log(
-  JSON.stringify(
-    { runId, receipt: receiptPath, results: results.map((r) => ({ client: r.client, status: r.status })) },
-    null,
-    2,
-  ),
+  serializeProof({ runId, receipt: receiptPath, results: results.map((r) => ({ client: r.client, status: r.status })) }, scrub),
 );
 process.exitCode = results.some((r) => r.status === "failed") ? 1 : results.some((r) => r.status === "inconclusive") ? 2 : 0;

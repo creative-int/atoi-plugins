@@ -10,6 +10,7 @@ import {
   validateMcpConfig,
   validatePluginManifest,
 } from "./agent-plugins.ts";
+import { containsCredentials, scrubCredentials } from "./scrub.ts";
 
 type Json = Record<string, any>;
 
@@ -54,6 +55,22 @@ assert.notDeepEqual(
   "the MCP validator must reject a server with no transport type",
 );
 checks.push("validators reject a closed-schema field and an untyped server");
+
+for (const prefix of ["service", "host", "oauth", "refresh", "code"]) {
+  const credential = ["atoi", prefix, "a1".repeat(32)].join("_");
+  assert(containsCredentials(credential), `the scanner recognizes the ${prefix} prefix`);
+  assert(!scrubCredentials(credential).includes(credential), `the scrubber removes the ${prefix} credential`);
+}
+for (const field of ["Authorization", "Cookie", "Set-Cookie", "code", "code_verifier", "refresh_token", "access_token"]) {
+  const credential = "synthetic-credential-value";
+  for (const text of [JSON.stringify({ [field]: credential }), new URLSearchParams({ [field]: credential }).toString()]) {
+    assert(containsCredentials(text), `the scanner recognizes ${field}`);
+    const safe = scrubCredentials(text);
+    assert(!safe.includes(credential), `the scrubber removes ${field}`);
+    assert(!containsCredentials(safe), `redacted ${field} stays safe to record`);
+  }
+}
+checks.push("synthetic credentials are detected and scrubbed without reflagging redacted fields");
 
 const manifest = readJson(join(pluginRoot, "plugin.json"));
 assert.deepEqual(validatePluginManifest(manifest), [], "plugin.json");
@@ -181,16 +198,23 @@ assert.deepEqual(
 );
 checks.push(`the skill, its references, the README and the Claude catalog name exactly the ${toolNames.length} tools the reference ships`);
 
-const shipped = [...walk(pluginRoot), join(root, "README.md")].filter((path) => !path.endsWith(".png"));
+const shipped = [
+  ...readJson(join(root, "package.json")).files.flatMap((entry: string) => {
+    const path = join(root, entry);
+    return lstatSync(path).isDirectory() ? walk(path) : [path];
+  }),
+  ...walk(join(root, "docs/proofs/install")),
+  ...walk(doorProofs),
+];
 for (const path of shipped) {
   const text = readFileSync(path, "utf8");
-  const name = relative(root, path);
+  const name = scrubCredentials(relative(root, path));
   assert(!text.includes("/Users/"), `${name} contains a private host path`);
   assert(!text.includes("[TODO"), `${name} contains a scaffold placeholder`);
-  assert(!/atoi_(?:service|host)_[A-Za-z0-9]{12,}/.test(text), `${name} contains an Atoi token`);
+  assert(!containsCredentials(text), `${name} contains credential material`);
   assert(!/convex\.(?:site|cloud)/.test(text), `${name} names a raw Convex deployment`);
 }
-checks.push("no private path, placeholder, token or raw deployment host in shipped files");
+checks.push("no private path, placeholder, credential or raw deployment host in shipped files and proof receipts");
 
 console.log(
   JSON.stringify(

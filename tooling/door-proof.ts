@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { atoiConfig } from "../atoi.config.ts";
+import { scrubCredentials, serializeProof } from "./scrub.ts";
 
 type Check = { claim: string; source: string; held: boolean; observed: boolean; evidence: string };
 type Exchange = { request: string; status: number | null; headers: Record<string, string>; body: string; error?: string };
@@ -29,7 +30,7 @@ const RULING = "~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-2026
 const KEPT_HEADERS = ["location", "www-authenticate", "content-type", "cache-control", "access-control-allow-origin"];
 
 function check(claim: string, source: string, held: boolean, evidence: string, observed = true) {
-  checks.push({ claim, source, held: observed && held, observed, evidence: evidence.slice(0, 600) });
+  checks.push({ claim: scrubCredentials(claim), source: scrubCredentials(source), held: observed && held, observed, evidence: scrubCredentials(evidence).slice(0, 600) });
   return observed && held;
 }
 
@@ -46,18 +47,24 @@ async function exchange(label: string, url: string, init: RequestInit = {}): Pro
       const value = response.headers.get(name);
       if (value !== null) record.headers[name] = value;
     }
-    record.body = (await response.text()).slice(0, 1_500);
+    record.body = await response.text();
   } catch (error) {
     record.error = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
   }
-  exchanges.push({ ...record, request: `${label}: ${record.request}` });
+  exchanges.push({
+    ...record,
+    request: scrubCredentials(`${label}: ${record.request}`),
+    headers: Object.fromEntries(Object.entries(record.headers).map(([name, value]) => [name, scrubCredentials(value)])),
+    body: scrubCredentials(record.body).slice(0, 1_500),
+    ...(record.error ? { error: scrubCredentials(record.error) } : {}),
+  });
   return record;
 }
 
 const describe = (response: Exchange) =>
   response.error
     ? `request failed: ${response.error}`
-    : `${response.status}${response.headers.location ? ` → ${response.headers.location}` : ""} ${response.headers["content-type"] ?? ""} ${response.body.slice(0, 160)}`.trim();
+    : `${response.status}${response.headers.location ? ` → ${scrubCredentials(response.headers.location)}` : ""} ${response.headers["content-type"] ?? ""} ${scrubCredentials(response.body).slice(0, 160)}`.trim();
 
 function parseChallenge(header: string | undefined) {
   if (!header || !/^\s*Bearer\b/i.test(header)) return null;
@@ -259,18 +266,19 @@ async function main() {
 
   const runDir = join(repoRoot, ".artifacts/door-proof", receipt.runId);
   mkdirSync(runDir, { recursive: true });
-  writeFileSync(join(runDir, "receipt.json"), `${JSON.stringify(receipt, null, 2)}\n`);
+  const receiptJson = serializeProof(receipt);
+  writeFileSync(join(runDir, "receipt.json"), receiptJson);
 
   if (argv.includes("--record")) {
     const proofsDir = join(repoRoot, "docs/proofs/door");
     mkdirSync(proofsDir, { recursive: true });
     const file = `${receipt.timestamp.replace(/[:.]/g, "-")}.json`;
-    writeFileSync(join(proofsDir, file), `${JSON.stringify(receipt, null, 2)}\n`);
+    writeFileSync(join(proofsDir, file), receiptJson);
     writeIndex(proofsDir);
   }
 
   for (const c of checks) console.error(`${c.held ? "held" : c.observed ? "FAILED" : "unobserved"}: ${c.claim}`);
-  console.log(JSON.stringify({ resource, status, held: receipt.held, total: receipt.total, receipt: join(runDir, "receipt.json") }, null, 2));
+  console.log(serializeProof({ resource, status, held: receipt.held, total: receipt.total, receipt: join(runDir, "receipt.json") }));
   process.exitCode = status === "proven" ? 0 : status === "failed" ? 1 : 2;
 }
 
@@ -284,6 +292,8 @@ function writeIndex(proofsDir: string) {
     "",
     "Each row is one run of `pnpm proof:door`: an unauthenticated walk of the discovery chain a hosted client (Claude.ai, ChatGPT, Claude Code, Codex, Cursor) follows to reach Atoi's MCP door over OAuth. It uses no credential. `tooling/smoke.ts` refuses a remote entry in `plugins/atoi/mcp.json` until the newest receipt for that URL is proven.",
     "",
+    "Receipt fields keep their existing shape. `tooling/scrub.ts` sanitizes every receipt field and the generated index before writing: service, host, OAuth access, refresh and authorization-code credentials; Authorization, Cookie and Set-Cookie values; and code, code_verifier, refresh_token and access_token fields in JSON, forms and callback URLs. Redacted values use `<redacted>`. Exchange bodies and check evidence are sanitized before truncation; checks still inspect the original in-memory response. Run the isolated synthetic regression suite with `node --test --test-concurrency=1 tooling/scrub.test.ts`.",
+    "",
     "| Run (UTC) | Resource | Status | Held | Load (1m, start → end) | Receipt |",
     "| --- | --- | --- | --- | --- | --- |",
     ...receipts.map(({ file, data }) =>
@@ -293,7 +303,12 @@ function writeIndex(proofsDir: string) {
     "The spec each claim cites is `~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md` (rulings 2026-09-16: resource `https://atoi.app/api/mcp`, one `operator` scope).",
     "",
   ];
-  writeFileSync(join(proofsDir, "README.md"), lines.join("\n"));
+  writeFileSync(join(proofsDir, "README.md"), scrubCredentials(lines.join("\n")));
 }
 
-await main();
+try {
+  await main();
+} catch (error) {
+  console.error(scrubCredentials(error instanceof Error ? `${error.name}: ${error.message}` : String(error)));
+  process.exitCode = 1;
+}
