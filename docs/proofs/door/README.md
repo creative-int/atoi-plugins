@@ -6,6 +6,7 @@ Receipt fields keep their existing shape. `tooling/scrub.ts` sanitizes every rec
 
 | Run (UTC) | Resource | Status | Held | Load (1m, start → end) | Receipt |
 | --- | --- | --- | --- | --- | --- |
+| 2026-09-22 04:36 | `https://atoi.app/api/mcp` | proven | 19/19 | 20.05 → 20.37 | [json](2026-09-22T04-36-54-482Z.json) |
 | 2026-09-16 20:55 | `https://atoi.app/api/mcp` | failed | 0/19 | 71.06 → 71.06 | [json](2026-09-16T20-55-58-518Z.json) |
 | 2026-09-16 20:55 | `https://atoi.app/api/mcp` | failed | 0/19 | 63.87 → 63.87 | [json](2026-09-16T20-55-40-489Z.json) |
 
