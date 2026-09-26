@@ -13,6 +13,7 @@ Receipt fields keep their existing shape. Before either receipt copy or this ind
 
 ## Notes
 
+- [CONNECTED](CONNECTED.md)
 - [2026-09-16-retirement-cursor-unobserved](2026-09-16-retirement-cursor-unobserved.md)
 - [2026-09-16-cursor-skill-marker](2026-09-16-cursor-skill-marker.md)
 

@@ -45,10 +45,11 @@
     "generate": "node tooling/generate.ts",
     "check:generated": "node tooling/generate.ts --check",
     "typecheck": "tsc --noEmit",
-    "smoke": "node tooling/smoke.ts",
+    "smoke": "node tooling/smoke.ts && node --test tooling/connected-proof.test.ts",
     "verify": "pnpm run check:generated && pnpm run typecheck && pnpm run smoke",
     "proof:install": "node tooling/install-proof.ts",
-    "proof:door": "node tooling/door-proof.ts"
+    "proof:door": "node tooling/door-proof.ts",
+    "proof:connected": "node tooling/connected-proof.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
