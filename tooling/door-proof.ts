@@ -26,7 +26,7 @@ const exchanges: Exchange[] = [];
 const SPEC = "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization";
 const CLAUDE = "https://claude.com/docs/connectors/building/authentication";
 const OPENAI = "https://developers.openai.com/plugins/build/auth";
-const RULING = "~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md";
+const POLICY = "docs/proofs/door/LIFECYCLE.md#public-preflight";
 const KEPT_HEADERS = ["location", "www-authenticate", "content-type", "cache-control", "access-control-allow-origin"];
 
 function check(claim: string, source: string, held: boolean, evidence: string, observed = true) {
@@ -121,7 +121,7 @@ async function main() {
   );
   check(
     `the challenge names scope="${scope}"`,
-    `${SPEC} §Scope Selection Strategy; ${RULING} §3.3`,
+    `${SPEC} §Scope Selection Strategy; ${POLICY}`,
     challenge?.scope === scope,
     mcp.headers["www-authenticate"] ?? "no WWW-Authenticate header",
     !mcp.error,
@@ -161,7 +161,7 @@ async function main() {
     check("metadata names an https authorization server first", `${SPEC}/authorization-server-discovery §Authorization Server Location`, Array.isArray(prm.authorization_servers) && isHttps(prm.authorization_servers[0]), JSON.stringify(prm.authorization_servers));
     check(
       `metadata scopes_supported includes ${scope} and not offline_access`,
-      `${SPEC} §Refresh Tokens; ${RULING} §3.3`,
+      `${SPEC} §Refresh Tokens; ${POLICY}`,
       Array.isArray(prm.scopes_supported) && prm.scopes_supported.includes(scope) && !prm.scopes_supported.includes("offline_access"),
       JSON.stringify(prm.scopes_supported),
     );
@@ -185,8 +185,8 @@ async function main() {
     ["code_challenge_methods_supported includes S256", `${SPEC}/security-considerations §Authorization Code Protection`, (d) => Array.isArray(d.code_challenge_methods_supported) && d.code_challenge_methods_supported.includes("S256"), (d) => d.code_challenge_methods_supported],
     ["client_id_metadata_document_supported is true and token_endpoint_auth_methods_supported includes none", `${CLAUDE} §DCR and CIMD details`, (d) => d.client_id_metadata_document_supported === true && Array.isArray(d.token_endpoint_auth_methods_supported) && d.token_endpoint_auth_methods_supported.includes("none"), (d) => [d.client_id_metadata_document_supported, d.token_endpoint_auth_methods_supported]],
     ["authorization_response_iss_parameter_supported is true", `${OPENAI} §Protect callbacks with issuer identification`, (d) => d.authorization_response_iss_parameter_supported === true, (d) => d.authorization_response_iss_parameter_supported],
-    ["grant_types_supported includes authorization_code and refresh_token", `${RULING} §3.6`, (d) => Array.isArray(d.grant_types_supported) && ["authorization_code", "refresh_token"].every((g) => d.grant_types_supported.includes(g)), (d) => d.grant_types_supported],
-    ["registration_endpoint is https (the DCR fallback Cursor documents)", `https://cursor.com/docs/mcp; ${RULING} §3.4`, (d) => isHttps(d.registration_endpoint), (d) => d.registration_endpoint],
+    ["grant_types_supported includes authorization_code and refresh_token", `${POLICY}`, (d) => Array.isArray(d.grant_types_supported) && ["authorization_code", "refresh_token"].every((g) => d.grant_types_supported.includes(g)), (d) => d.grant_types_supported],
+    ["registration_endpoint is https (the DCR fallback Cursor documents)", `https://cursor.com/docs/mcp; ${POLICY}`, (d) => isHttps(d.registration_endpoint), (d) => d.registration_endpoint],
     ["scopes_supported lists offline_access, so hosted clients ask for refresh", `${CLAUDE} §DCR and CIMD details`, (d) => Array.isArray(d.scopes_supported) && d.scopes_supported.includes("offline_access"), (d) => d.scopes_supported],
   ];
   for (const [claim, source, test, show] of asClaims) {
@@ -290,7 +290,7 @@ function writeIndex(proofsDir: string) {
   const lines = [
     "# Door proofs",
     "",
-    "Each row is one run of `pnpm proof:door`: an unauthenticated walk of the discovery chain a hosted client (Claude.ai, ChatGPT, Claude Code, Codex, Cursor) follows to reach Atoi's MCP door over OAuth. It uses no credential. `tooling/smoke.ts` refuses a remote entry in `plugins/atoi/mcp.json` until the newest receipt for that URL is proven.",
+    "Each row is one run of `pnpm proof:door`: an unauthenticated walk of the discovery chain a hosted client (Claude.ai, ChatGPT, Claude Code, Codex, Cursor) follows to reach Atoi's MCP door over OAuth. It uses no credential. These rows do not qualify real login, consent, token issuance, audience binding, refresh, or revocation; see [the lifecycle qualification runbook](LIFECYCLE.md). `tooling/smoke.ts` refuses a remote entry in `plugins/atoi/mcp.json` until the newest receipt for that URL is proven.",
     "",
     "Receipt fields keep their existing shape. `tooling/scrub.ts` sanitizes every receipt field and the generated index before writing: service, host, OAuth access, refresh and authorization-code credentials; Authorization, Cookie and Set-Cookie values; and code, code_verifier, refresh_token and access_token fields in JSON, forms and callback URLs. Redacted values use `<redacted>`. Exchange bodies and check evidence are sanitized before truncation; checks still inspect the original in-memory response. Run the isolated synthetic regression suite with `node --test --test-concurrency=1 tooling/scrub.test.ts`.",
     "",
@@ -300,7 +300,7 @@ function writeIndex(proofsDir: string) {
       `| ${data.timestamp.replace("T", " ").slice(0, 16)} | \`${data.resource}\` | ${data.status} | ${data.held}/${data.total} | ${data.load.start[0]} → ${data.load.end[0]} | [json](${file}) |`,
     ),
     "",
-    "The spec each claim cites is `~/.agents/artifacts/findings/atoi/atoi-mcp-oauth-front-spec-20260916.md` (rulings 2026-09-16: resource `https://atoi.app/api/mcp`, one `operator` scope).",
+    "Current public qualification policy is documented in [the lifecycle runbook](LIFECYCLE.md#public-preflight): resource `https://atoi.app/api/mcp`, one `operator` scope. Older receipts retain their historical source citations.",
     "",
   ];
   writeFileSync(join(proofsDir, "README.md"), scrubCredentials(lines.join("\n")));
